@@ -1,24 +1,33 @@
-import logo from './logo.svg';
+import { Col, Container,Row } from 'react-bootstrap';
 import './App.css';
 
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+
+import NavigationBar from './components/NavigationBar';
+import Welcome from './components/Welcome';
+import Footer from './components/Footer';
+import ProjectList from './components/ProjectList';
+
 function App() {
+  const marginTop = {
+    marginTop:"20px"
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <NavigationBar />
+      <Container>
+        <Row>
+          <Col lg={12} style={marginTop}>
+            <Routes>
+              <Route path='/' element={<Welcome />}></Route>
+              <Route path='/project-list' element={<ProjectList />}></Route>
+            </Routes>
+          </Col>
+        </Row>
+      </Container>
+      <Footer/>
+    </Router>
   );
 }
 
