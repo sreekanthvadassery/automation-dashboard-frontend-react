@@ -17,7 +17,7 @@ class ProjectService {
     }
 
     updateProject(projectId,project){
-        return axios.put(PROJECT_BASE_REST_API_URL+'/'+projectId,project);
+        return axios.put(PROJECT_BASE_REST_API_URL+'/update/'+projectId,project);
     }
 }
 
