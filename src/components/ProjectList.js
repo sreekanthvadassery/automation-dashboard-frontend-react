@@ -1,9 +1,10 @@
 import React,{useState,useEffect} from 'react'
 
-import {Button, ButtonGroup, Card, Image, Table} from 'react-bootstrap';
+import {Button, ButtonGroup, Card,  Table} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList,faEdit,faTrash } from '@fortawesome/free-solid-svg-icons'
 import ProjectService from '../services/ProjectService';
+import {AiOutlineCheck,AiOutlineClose} from 'react-icons/ai'
 
 const ProjectList = () => {
 
@@ -18,7 +19,6 @@ const ProjectList = () => {
     })
   }, [])
   
-
   return (
     <Card className="border border-dark bg-dark text-white">
         <Card.Header>
@@ -44,7 +44,7 @@ const ProjectList = () => {
                             <tr key={project.projectId}>
                                 <td>{project.projectName}</td>
                                 <td>{project.projectDescription}</td>
-                                <td>{project.enabled}</td>
+                                <td align='center'>{project.enabled? <AiOutlineCheck/> : <AiOutlineClose/> }</td>
                                 <td>{project.createdAt}</td>
                                 <td>{project.updatedAt}</td>
                                 <td>{project.lastUpdatedBy}</td>

@@ -2,7 +2,6 @@ import React from 'react'
 
 import {Navbar,Container,Nav} from 'react-bootstrap';
 import {BsBook} from 'react-icons/bs'
-import {Link} from 'react-router-dom'
 
 const NavigationBar = () => {
   return (
@@ -12,7 +11,7 @@ const NavigationBar = () => {
                 <BsBook/> Automation Dashboard
             </Navbar.Brand>
             <Nav className="me-auto">
-                <Nav.Link href="#save-project">Add Project</Nav.Link>
+                <Nav.Link href="save-project">Add Project</Nav.Link>
                 <Nav.Link href="project-list">Project List</Nav.Link>
             </Nav>
         </Container>
