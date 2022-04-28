@@ -50,7 +50,7 @@ const ProjectList = () => {
                                 <td>{project.lastUpdatedBy}</td>
                                 <td>
                                     <ButtonGroup>
-                                        <Button size="sm" variant="outline-primary"><FontAwesomeIcon icon={faEdit} /></Button>{' '}
+                                        <Button href={`/edit-project/${project.projectId}`} size="sm" variant="outline-primary"><FontAwesomeIcon icon={faEdit} /></Button>{' '}
                                         <Button size="sm" variant="outline-danger"><FontAwesomeIcon icon={faTrash} /></Button>
                                     </ButtonGroup>
                                 </td>

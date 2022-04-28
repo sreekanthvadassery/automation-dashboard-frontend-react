@@ -1,6 +1,6 @@
-import React ,{useState} from 'react'
+import React ,{useState,useEffect} from 'react'
 
-import {useNavigate} from 'react-router-dom'
+import {useNavigate,useParams} from 'react-router-dom'
 
 import {Card,Form,Button, Container} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -22,26 +22,55 @@ const Project = () => {
 
   const navigate = useNavigate();
 
-  const saveProject = (e) => {
+  const {projectId} = useParams();
+
+  const saveOrUpdateProject = (e) => {
     e.preventDefault();
-    
     const project = {projectName,projectDescription,enabled}
     console.log(project);
 
-    ProjectService.saveProject(project).then((response) => {
-        console.log(response.data)
-        navigate('/project-list');
+    if(projectId){
+        ProjectService.updateProject(projectId,project).then( (response) =>{
+            console.log(response.data)
+            navigate('/project-list');
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+    else{
+        ProjectService.saveProject(project).then((response) => {
+            console.log(response.data)
+            navigate('/project-list');
+        }).catch(error => {
+            console.log(error)
+        })
+    }  
+  }
+
+  useEffect(() => {
+    ProjectService.getProjectById(projectId).then( (response) => {
+        setProjectName(response.data.projectName)
+        setProjectDescription(response.data.projectDescription)
+        setEnabled(response.data.enabled)
     }).catch(error => {
         console.log(error)
     })
-
+  }, [])
+  
+  const title = () => {
+    if(projectId){
+        return 'Update Project'
+    }
+    else{
+        return 'Add Project'
+    }
   }
 
   return (
     <Container style={containerStyle}>
         <Card className="border border-dark bg-dark text-white">
             <Card.Header>
-                <FontAwesomeIcon icon={faPlusSquare} /> Add Project
+                <FontAwesomeIcon icon={faPlusSquare} /> {title()}
             </Card.Header>
             <Form id="projectFormId">
                 <Card.Body>
@@ -89,7 +118,7 @@ const Project = () => {
                             
                 </Card.Body>
                 <Card.Footer style={{textAlign:"right"}}>
-                    <Button size="sm" variant="success" type="submit" onClick={(e) => saveProject(e)}>
+                    <Button size="sm" variant="success" type="submit" onClick={(e) => saveOrUpdateProject(e)}>
                         <FontAwesomeIcon icon={faSave} /> Submit
                     </Button>{' '}
                     <Button size="sm" variant="info" type="reset">

@@ -9,7 +9,15 @@ class ProjectService {
     }
 
     saveProject(project){
-        return axios.post(PROJECT_BASE_REST_API_URL+'/save',project)
+        return axios.post(PROJECT_BASE_REST_API_URL+'/save',project);
+    }
+
+    getProjectById(projectId){
+        return axios.get(PROJECT_BASE_REST_API_URL+'/'+projectId);
+    }
+
+    updateProject(projectId,project){
+        return axios.put(PROJECT_BASE_REST_API_URL+'/'+projectId,project);
     }
 }
 

@@ -24,6 +24,7 @@ function App() {
               <Route path='/' element={<Welcome />}></Route>
               <Route path='/save-project' element={<Project />}></Route>
               <Route path='/project-list' element={<ProjectList />}></Route>
+              <Route path='/edit-project/:projectId' element={<Project />}></Route>
             </Routes>
           </Col>
         </Row>

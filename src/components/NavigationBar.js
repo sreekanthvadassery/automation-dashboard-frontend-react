@@ -1,18 +1,21 @@
 import React from 'react'
 
-import {Navbar,Container,Nav} from 'react-bootstrap';
+import {Navbar,Container,Nav,NavDropdown} from 'react-bootstrap';
 import {BsBook} from 'react-icons/bs'
 
 const NavigationBar = () => {
   return (
     <Navbar bg="dark" variant="dark">
-        <Container>
+        <Container fluid>
             <Navbar.Brand href="/">
                 <BsBook/> Automation Dashboard
             </Navbar.Brand>
-            <Nav className="me-auto">
-                <Nav.Link href="save-project">Add Project</Nav.Link>
-                <Nav.Link href="project-list">Project List</Nav.Link>
+
+            <Nav className="me-auto" bg="dark" variant="dark">
+                <NavDropdown title="Project" id="navbarScrollingDropdown" menuVariant="dark">
+                    <NavDropdown.Item href="/save-project">Add Project</NavDropdown.Item>
+                    <NavDropdown.Item href="/project-list">Project List</NavDropdown.Item>
+                </NavDropdown>
             </Nav>
         </Container>
     </Navbar>
