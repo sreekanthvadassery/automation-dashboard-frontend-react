@@ -1,4 +1,4 @@
-import React ,{useState,useEffect} from 'react'
+import React ,{useState,useEffect,useRef} from 'react'
 
 import {useNavigate,useParams} from 'react-router-dom'
 
@@ -26,6 +26,7 @@ const Project = () => {
 
   const saveOrUpdateProject = (e) => {
     e.preventDefault();
+    
     const project = {projectName,projectDescription,enabled}
     console.log(project);
 
@@ -48,14 +49,18 @@ const Project = () => {
   }
 
   useEffect(() => {
-    ProjectService.getProjectById(projectId).then( (response) => {
-        setProjectName(response.data.projectName)
-        setProjectDescription(response.data.projectDescription)
-        setEnabled(response.data.enabled)
-    }).catch(error => {
-        console.log(error)
-    })
+    //We need the below code only when projectId is present , which means during update
+    if(projectId){
+        ProjectService.getProjectById(projectId).then( (response) => {
+            setProjectName(response.data.projectName)
+            setProjectDescription(response.data.projectDescription)
+            setEnabled(response.data.enabled)
+        }).catch(error => {
+            console.log(error)
+        })
+    }
   }, [])
+ 
   
   const title = () => {
     if(projectId){
@@ -66,13 +71,19 @@ const Project = () => {
     }
   }
 
+  const resetProject= () =>{
+    setProjectName('')
+    setProjectDescription('')
+    setEnabled(false)
+  }
+
   return (
     <Container style={containerStyle}>
         <Card className="border border-dark bg-dark text-white">
             <Card.Header>
                 <FontAwesomeIcon icon={faPlusSquare} /> {title()}
             </Card.Header>
-            <Form id="projectFormId">
+            <Form onReset={resetProject} id="projectFormId">
                 <Card.Body>
 
                     <Form.Group className="mb-3" controlId="formGridProjectName">
@@ -81,7 +92,7 @@ const Project = () => {
                             value={projectName} 
                             name="projectName" 
                             className="bg-dark text-white" 
-                            required 
+                            required
                             type="text" 
                             placeholder="Enter Project Name" 
                             onChange = {(e) => setProjectName(e.target.value)}
