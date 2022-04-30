@@ -15,6 +15,8 @@ const NavigationBar = () => {
                 <NavDropdown title="Project" id="navbarScrollingDropdown" menuVariant="dark">
                     <NavDropdown.Item href="/save-project">Add Project</NavDropdown.Item>
                     <NavDropdown.Item href="/project-list">Project List</NavDropdown.Item>
+                    
+                    <NavDropdown.Item href="/form-example">Form Example</NavDropdown.Item>
                 </NavDropdown>
             </Nav>
         </Container>

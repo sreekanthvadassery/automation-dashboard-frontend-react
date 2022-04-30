@@ -9,6 +9,8 @@ import Footer from './components/Footer';
 import ProjectList from './components/ProjectList';
 import Project from './components/Project';
 
+import Form from './components/Form';
+
 function App() {
   const marginTop = {
     marginTop:"20px"
@@ -25,6 +27,8 @@ function App() {
               <Route path='/save-project' element={<Project />}></Route>
               <Route path='/project-list' element={<ProjectList />}></Route>
               <Route path='/edit-project/:projectId' element={<Project />}></Route>
+              
+              <Route path='/form-example' element={<Form />}></Route>
             </Routes>
           </Col>
         </Row>

@@ -1,68 +1,18 @@
-import React ,{useState,useEffect} from 'react'
+import React ,{useState,useEffect,useRef} from 'react'
 
 import {useNavigate,useParams} from 'react-router-dom'
 
-import { Card,Form,Button, Container} from 'react-bootstrap';
+import {Card,Form,Button, Container} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSave, faPlusSquare, faUndo } from '@fortawesome/free-solid-svg-icons'
+import { faSave,faPlusSquare, faUndo } from '@fortawesome/free-solid-svg-icons'
 import ProjectService from '../services/ProjectService';
 
-//React React Forms Full Tutorial - Validation, React-Hook-Form, Yup
-//https://www.youtube.com/watch?v=UvH70UkbyfE&t=19s
-//https://stackoverflow.com/questions/66927051/getting-uncaught-typeerror-path-split-is-not-a-function-in-react
-
-//React-Hook-Form and Yup imports
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
-//Yup validation
-const schema = yup.object().shape({
-    projectName: yup.string().required("Required field"),
-    projectDescription: yup.string().required("Required field"),
-    enabled: yup.boolean()
-});
-
-//Container style css
 const containerStyle = {
     align: "center",
     width: "40rem"
   };
 
 const Project = () => {
-
-  //Yup validation
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(schema),
-  });
-  //React-Hook-Form submit
-  const submitForm = (data) => {
-    console.log(data);
-    
-    //saveOrUpdateProject(data) function steps given below
-    //const project = {projectName,projectDescription,enabled}
-    //console.log(project);
-
-    if(projectId){
-        //ProjectService.updateProject(projectId,project).then( (response) =>{
-        ProjectService.updateProject(projectId,data).then( (response) =>{
-            console.log(response.data)
-            navigate('/project-list');
-        }).catch(error => {
-            console.log(error)
-        })
-    }
-    else{
-        //ProjectService.saveProject(project).then((response) => {
-            ProjectService.saveProject(data).then((response) => {
-            console.log(response.data)
-            navigate('/project-list');
-        }).catch(error => {
-            console.log(error)
-        })
-    }  
-
-  };
 
   const [projectName, setProjectName] = useState('')
   const [projectDescription, setProjectDescription] = useState('')
@@ -75,7 +25,7 @@ const Project = () => {
   const {projectId} = useParams();
 
   const saveOrUpdateProject = (e) => {
-    /*e.preventDefault();*/
+    e.preventDefault();
     
     const project = {projectName,projectDescription,enabled}
     console.log(project);
@@ -102,8 +52,6 @@ const Project = () => {
     //We need the below code only when projectId is present , which means during update
     if(projectId){
         ProjectService.getProjectById(projectId).then( (response) => {
-            console.log(response.data)
-            
             setProjectName(response.data.projectName)
             setProjectDescription(response.data.projectDescription)
             setEnabled(response.data.enabled)
@@ -135,58 +83,53 @@ const Project = () => {
             <Card.Header>
                 <FontAwesomeIcon icon={faPlusSquare} /> {title()}
             </Card.Header>
-            <Form onReset={resetProject} onSubmit={handleSubmit(submitForm)} id="projectFormId">
+            <Form onReset={resetProject} id="projectFormId">
                 <Card.Body>
 
                     <Form.Group className="mb-3" controlId="formGridProjectName">
                         <Form.Label>Project Name</Form.Label>
                         <Form.Control 
-                            defaultValue ={projectName} 
+                            value={projectName} 
                             name="projectName" 
                             className="bg-dark text-white" 
+                            required
                             type="text" 
                             placeholder="Enter Project Name" 
                             onChange = {(e) => setProjectName(e.target.value)}
                             autoComplete = "off"
-                            {...register("projectName")}
                         />
                         <Form.Text className="text-muted">
                             Enter your Project Name.
                         </Form.Text>
-                        <p className="text-white">{errors.projectName && errors.projectName.message}</p>
-                        
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formGridProjectDescription">
                         <Form.Label>Project Description</Form.Label>
                         <Form.Control 
-                            defaultValue ={projectDescription} 
+                            value={projectDescription} 
                             name="projectDescription" 
                             className="bg-dark text-white" 
                             type="text" 
                             placeholder="Enter Description" 
                             onChange = {(e) => setProjectDescription(e.target.value)}
                             autoComplete = "off"
-                            {...register("projectDescription")}
                         />
-                        <p className="text-white">{errors.projectDescription && errors.projectDescription.message}</p>
                     </Form.Group>
                     
                     <Form.Group className="mb-3" controlId="formGridEnabled">
                         <Form.Check 
-                            defaultChecked ={enabled} 
+                            value={enabled} 
                             name="enabled" 
                             type="checkbox" 
                             label="Enabled" 
+                            checked={enabled}
                             onChange={updateEnabled}
-                            {...register("enabled")}
                         />
-                        <p className="text-white">{errors.enabled && errors.enabled.message}</p>
                     </Form.Group>                    
                             
                 </Card.Body>
                 <Card.Footer style={{textAlign:"right"}}>
-                    <Button size="sm" variant="success" type="submit">
+                    <Button size="sm" variant="success" type="submit" onClick={(e) => saveOrUpdateProject(e)}>
                         <FontAwesomeIcon icon={faSave} /> Submit
                     </Button>{' '}
                     <Button size="sm" variant="info" type="reset">
