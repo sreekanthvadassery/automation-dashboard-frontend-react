@@ -103,10 +103,12 @@ const Project = () => {
     if(projectId){
         ProjectService.getProjectById(projectId).then( (response) => {
             console.log(response.data)
-            
+
             setProjectName(response.data.projectName)
             setProjectDescription(response.data.projectDescription)
             setEnabled(response.data.enabled)
+
+            console.log(enabled)
         }).catch(error => {
             console.log(error)
         })
