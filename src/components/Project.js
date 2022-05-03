@@ -24,8 +24,8 @@ const containerStyle = {
 
 //Yup validation - Create schema with the form inputs
 const schema = yup.object().shape({
-    projectName: yup.string().required("Required field"),
-    projectDescription: yup.string().required("Required field"),
+    projectName: yup.string().required("Project Name is a required field"),
+    projectDescription: yup.string().required("Description is a required field"),
     enabled: yup.boolean()
 });
 
@@ -101,7 +101,7 @@ const Project = () => {
             console.log(error)
         })
     }
-  }, [projectName,projectDescription,enabled,projectId])
+  }, [projectName,projectDescription,enabled,projectId,reset])
  
   //Function to update the page tile (Add or Update)
   const title = () => {
@@ -139,11 +139,14 @@ const Project = () => {
                             onChange = {(e) => setProjectName(e.target.value)}
                             autoComplete = "off"
                             {...register("projectName")}
+                            isInvalid={errors.projectName && errors.projectName.message}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            { errors.projectName && errors.projectName.message}
+                        </Form.Control.Feedback>
                         <Form.Text className="text-muted">
                             Enter your Project Name.
                         </Form.Text>
-                        <p className="text-white">{errors.projectName && errors.projectName.message}</p>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formGridProjectDescription">
@@ -157,8 +160,11 @@ const Project = () => {
                             onChange = {(e) => setProjectDescription(e.target.value)}
                             autoComplete = "off"
                             {...register("projectDescription")}
+                            isInvalid={errors.projectDescription && errors.projectDescription.message}
                         />
-                        <p className="text-white">{errors.projectDescription && errors.projectDescription.message}</p>
+                        <Form.Control.Feedback type="invalid">
+                            { errors.projectDescription && errors.projectDescription.message}
+                        </Form.Control.Feedback>
                     </Form.Group>
                     
                     <Form.Group className="mb-3" controlId="formGridEnabled">
