@@ -1,8 +1,8 @@
-import React ,{ useState, useEffect } from 'react'
+import React ,{useState,useEffect} from 'react'
 
-import { useNavigate, useParams } from 'react-router-dom'
+import {useNavigate,useParams} from 'react-router-dom'
 
-import { Card, Form, Button, Container } from 'react-bootstrap';
+import { Card,Form,Button, Container} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faPlusSquare, faUndo } from '@fortawesome/free-solid-svg-icons'
 import ProjectService from '../services/ProjectService';
@@ -16,38 +16,35 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-//Container style css
-const containerStyle = {
-    align: "center",
-    width: "40rem"
-};
-
-//Yup validation - Create schema with the form inputs
+//Yup validation
 const schema = yup.object().shape({
     projectName: yup.string().required("Required field"),
     projectDescription: yup.string().required("Required field"),
     enabled: yup.boolean()
 });
 
-//React Arrow Function Component Export start
+//Container style css
+const containerStyle = {
+    align: "center",
+    width: "40rem"
+  };
+
 const Project = () => {
-  
+
   //Yup validation
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
-
   //React-Hook-Form submit
   const submitForm = (data) => {
     console.log(data);
-    //Call saveOrUpdateProject()
-    saveOrUpdateProject(data);
-  };
+    
+    //saveOrUpdateProject(data) function steps given below
+    //const project = {projectName,projectDescription,enabled}
+    //console.log(project);
 
-  //Function which saves or update data, based on the presense of projectId
-  const saveOrUpdateProject = (data) => {
-    //If projectId is present -> Update data
     if(projectId){
+        //ProjectService.updateProject(projectId,project).then( (response) =>{
         ProjectService.updateProject(projectId,data).then( (response) =>{
             console.log(response.data)
             navigate('/project-list');
@@ -55,55 +52,83 @@ const Project = () => {
             console.log(error)
         })
     }
-    //Else -> Save data
     else{
+        //ProjectService.saveProject(project).then((response) => {
         ProjectService.saveProject(data).then((response) => {
             console.log(response.data)
             navigate('/project-list');
         }).catch(error => {
             console.log(error)
         })
-    } 
-  }
+    }  
 
-  //Variables present in form
+  };
+
   const [projectName, setProjectName] = useState('')
   const [projectDescription, setProjectDescription] = useState('')
+  
   const [enabled, setEnabled] = useState(false)
-  //function to update the checkbox
   const updateEnabled = () => setEnabled(!enabled);
 
-  //This variable is used for page navigation
   const navigate = useNavigate();
-  //Finding whether any path variable present in  the request (For update we will be having the id present)
+
   const {projectId} = useParams();
 
-  //https://stackoverflow.com/questions/54069253/the-usestate-set-method-is-not-reflecting-a-change-immediately
-  useEffect(() => {
-    //We need the below code only when projectId is present , which means during update
-    //Call the API -> findById and populate the data in form
+  const saveOrUpdateProject = (e) => {
+    /*e.preventDefault();*/
+    
+    const project = {projectName,projectDescription,enabled}
+    console.log(project);
+
     if(projectId){
-        ProjectService.getProjectById(projectId).then( (response) => {
+        ProjectService.updateProject(projectId,project).then( (response) =>{
             console.log(response.data)
-            //Setting the values
-            setProjectName(response.data.projectName)
-            setProjectDescription(response.data.projectDescription)
-            setEnabled(response.data.enabled)
-            
-            //Below code was added for the validation to work in update page (Used reset function)
-            //https://stackoverflow.com/questions/62242657/how-to-change-react-hook-form-defaultvalue-with-useeffect
-            reset({
-                projectName: response.data.projectName,
-                projectDescription: response.data.projectDescription,
-                enabled: response.data.enabled
-            });
+            navigate('/project-list');
         }).catch(error => {
             console.log(error)
         })
     }
-  }, [projectName,projectDescription,enabled,projectId])
+    else{
+        ProjectService.saveProject(project).then((response) => {
+            console.log(response.data)
+            navigate('/project-list');
+        }).catch(error => {
+            console.log(error)
+        })
+    }  
+  }
+
+  //https://stackoverflow.com/questions/54069253/the-usestate-set-method-is-not-reflecting-a-change-immediately
+  useEffect(() => {
+    //We need the below code only when projectId is present , which means during update
+    if(projectId){
+        ProjectService.getProjectById(projectId).then( (response) => {
+            console.log(response.data)
+
+            //const newProjectName = response.data.projectName
+            //const newProjectDescription = response.data.projectDescription
+            //const newEnabled = response.data.enabled
+
+            setProjectName(response.data.projectName)
+            setProjectDescription(response.data.projectDescription)
+            setEnabled(response.data.enabled)
+            
+            //setProjectName(newProjectName)
+            //setProjectDescription(newProjectDescription)
+            //setEnabled(newEnabled)
+
+
+            console.log({projectName})
+            console.log({projectDescription})            
+            console.log({enabled})
+
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+  }, [enabled,projectDescription,projectName,projectId])
  
-  //Function to update the page tile (Add or Update)
+  
   const title = () => {
     if(projectId){
         return 'Update Project'
@@ -113,7 +138,6 @@ const Project = () => {
     }
   }
 
-  //reset funtion
   const resetProject= () =>{
     setProjectName('')
     setProjectDescription('')
@@ -128,6 +152,7 @@ const Project = () => {
             </Card.Header>
             <Form onReset={resetProject} onSubmit={handleSubmit(submitForm)} id="projectFormId">
                 <Card.Body>
+
                     <Form.Group className="mb-3" controlId="formGridProjectName">
                         <Form.Label>Project Name</Form.Label>
                         <Form.Control 
@@ -144,6 +169,7 @@ const Project = () => {
                             Enter your Project Name.
                         </Form.Text>
                         <p className="text-white">{errors.projectName && errors.projectName.message}</p>
+                        
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formGridProjectDescription">
