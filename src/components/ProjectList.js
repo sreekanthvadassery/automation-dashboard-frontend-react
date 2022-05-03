@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react'
 
 import {Button, ButtonGroup, Card,  Table} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faList,faEdit,faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faList,faEdit,faTrash, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import ProjectService from '../services/ProjectService';
 import {AiOutlineCheck,AiOutlineClose} from 'react-icons/ai'
 
@@ -21,8 +21,13 @@ const ProjectList = () => {
   
   return (
     <Card className="border border-dark bg-dark text-white">
-        <Card.Header>
-            <FontAwesomeIcon icon={faList} /> Project List
+        <Card.Header className='d-flex justify-content-between align-items-center'>
+            <div>
+                <FontAwesomeIcon icon={faList} /> Project List
+            </div>
+            <Button href='/save-project' className='float-right' size="sm" variant="success" type="button">
+                <FontAwesomeIcon icon={faPlusSquare} /> Add Project
+            </Button>
         </Card.Header>
         <Card.Body>
             <Table bordered hover striped variant="dark">

@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { Card, Form, Button, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSave, faPlusSquare, faUndo } from '@fortawesome/free-solid-svg-icons'
+import { faSave, faPlusSquare, faUndo, faList } from '@fortawesome/free-solid-svg-icons'
 import ProjectService from '../services/ProjectService';
 
 //React React Forms Full Tutorial - Validation, React-Hook-Form, Yup
@@ -123,8 +123,13 @@ const Project = () => {
   return (
     <Container style={containerStyle}>
         <Card className="border border-dark bg-dark text-white">
-            <Card.Header>
-                <FontAwesomeIcon icon={faPlusSquare} /> {title()}
+            <Card.Header className='d-flex justify-content-between align-items-center'>
+                <div>
+                    <FontAwesomeIcon icon={faPlusSquare} /> {title()}
+                </div>
+                <Button href='/project-list' className='float-right' size="sm" variant="success" type="button">
+                    <FontAwesomeIcon icon={faList} /> Project List
+                </Button>
             </Card.Header>
             <Form onReset={resetProject} onSubmit={handleSubmit(submitForm)} id="projectFormId">
                 <Card.Body>
