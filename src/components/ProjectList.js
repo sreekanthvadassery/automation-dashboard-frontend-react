@@ -10,20 +10,38 @@ const ProjectList = () => {
 
   const [projects, setProjects] = useState([])
 
+  //this useEffect is used to load the data in list (on page load this will be called)
   useEffect(() => {
+    //calling the method 
+    getAllProjects();
+  }, [])
+
+  //method for getting all the project details from back end
+  const getAllProjects = () => {
     ProjectService.getAllProjects().then((response) => {
         setProjects(response.data)
         console.log(response.data)
     }).catch(error => {
         console.log(error);
     })
-  }, [])
+  }
+
+  //method for deleting the project
+  const deleteProject = (projectId) =>{
+      console.log('Delete Id: '+projectId);
+      ProjectService.deleteProject(projectId).then((response) =>{
+        //call the method which returns all the project details
+        getAllProjects();
+      }).catch(error =>{
+          console.log(error);
+      })
+  }
   
   return (
     <Card className="border border-dark bg-dark text-white">
         <Card.Header className='d-flex justify-content-between align-items-center'>
             <div>
-                <FontAwesomeIcon icon={faList} /> Project List
+                <FontAwesomeIcon icon={faList} /> <b>Project List</b>
             </div>
             <Button href='/save-project' className='float-right' size="sm" variant="success" type="button">
                 <FontAwesomeIcon icon={faPlusSquare} /> Add Project
@@ -56,7 +74,7 @@ const ProjectList = () => {
                                 <td>
                                     <ButtonGroup>
                                         <Button href={`/edit-project/${project.projectId}`} size="sm" variant="outline-primary"><FontAwesomeIcon icon={faEdit} /></Button>{' '}
-                                        <Button size="sm" variant="outline-danger"><FontAwesomeIcon icon={faTrash} /></Button>
+                                        <Button onClick={()=> deleteProject(project.projectId)} size="sm" variant="outline-danger"><FontAwesomeIcon icon={faTrash} /></Button>
                                     </ButtonGroup>
                                 </td>
                             </tr>

@@ -17,6 +17,7 @@ const NavigationBar = () => {
                     <NavDropdown.Item href="/project-list">Project List</NavDropdown.Item>
                     
                     <NavDropdown.Item href="/form-example">Form Example</NavDropdown.Item>
+                    <NavDropdown.Item href="/modal-example">Modal Example</NavDropdown.Item>
                 </NavDropdown>
             </Nav>
         </Container>

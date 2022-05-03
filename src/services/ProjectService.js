@@ -19,6 +19,10 @@ class ProjectService {
     updateProject(projectId,project){
         return axios.put(PROJECT_BASE_REST_API_URL+'/update/'+projectId,project);
     }
+
+    deleteProject(projectId){
+        return axios.delete(PROJECT_BASE_REST_API_URL+'/delete/'+projectId)
+    }
 }
 
 export default new ProjectService();

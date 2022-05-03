@@ -10,6 +10,7 @@ import ProjectList from './components/ProjectList';
 import Project from './components/Project';
 
 import Form from './components/Form';
+import ModalExample from './components/ModalExample';
 
 function App() {
   const marginTop = {
@@ -29,6 +30,7 @@ function App() {
               <Route path='/edit-project/:projectId' element={<Project />}></Route>
               
               <Route path='/form-example' element={<Form />}></Route>
+              <Route path='/modal-example' element={<ModalExample />}></Route>
             </Routes>
           </Col>
         </Row>
