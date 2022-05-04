@@ -1,22 +1,24 @@
 import React from 'react'
 import { Modal, Button } from "react-bootstrap";
 
-const DeleteConfirmation = ({ showModal, hideModal, confirmModal, id, type, message }) => {
+import "../styles.css";
+
+const DeleteConfirmation = ({ showModal, hideModal, confirmModal, id, entityType, message }) => {
   return (
-    <Modal show={showModal} onHide={hideModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Delete Confirmation</Modal.Title>
-        </Modal.Header>
-        <Modal.Body><div className="alert alert-danger">{message}</div></Modal.Body>
-        <Modal.Footer>
-          <Button variant="default" onClick={hideModal}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={() => confirmModal(type, id) }>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+    <Modal show={showModal} onHide={hideModal} className="special_modal">
+      <Modal.Header closeButton>
+        <Modal.Title>Delete Confirmation</Modal.Title>
+      </Modal.Header>
+      <Modal.Body><div>{message}</div></Modal.Body>
+      <Modal.Footer>
+        <Button variant="light" onClick={hideModal}>
+          Cancel
+        </Button>
+        <Button variant="danger" onClick={() => confirmModal(entityType, id) }>
+          Delete
+        </Button>
+      </Modal.Footer>
+    </Modal>
   )
 }
 

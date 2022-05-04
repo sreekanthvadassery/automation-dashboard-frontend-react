@@ -1,11 +1,10 @@
 import React,{useState,useEffect} from 'react'
 
-import {Button, ButtonGroup, Card,  Table, Alert} from 'react-bootstrap';
+import {Button, ButtonGroup, Card,  Table} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList,faEdit,faTrash, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import ProjectService from '../services/ProjectService';
 import {AiOutlineCheck,AiOutlineClose} from 'react-icons/ai'
-import DeleteConfirmation from './DeleteConfirmation';
 
 const ProjectList = () => {
 
@@ -37,42 +36,6 @@ const ProjectList = () => {
           console.log(error);
       })
   }
-
-  // DELETE CONFIRM MODAL CODE START//
-  // Set up some additional local states for handling the Delete Confirmation Modal dialog box
-  const [entityType, setEntityType] = useState(null);
-  const [id, setId] = useState(null);
-  const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
-  const [deleteMessage, setDeleteMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-
-  // Handle the displaying of the Modal based on type and id
-  const showDeleteModal = (entityType, id) => {
-    setEntityType(entityType);
-    setId(id);
-    //Setting the success message to null (Once the delete is completed, then only we need the success message)
-    setSuccessMessage(null);
-    //Setting the message which needs to be displayed inside Modal
-    setDeleteMessage(`Are you sure you want to delete the ${entityType} '${projects.find((x) => x.projectId === id).projectName}' with ID: ${id}?`);
-    //We are setting this variable to true and pass it to the Modal so that it will show the Modal
-    setDisplayConfirmationModal(true);
-  };
-
-  // Hide the modal
-  const hideConfirmationModal = () => {
-    setDisplayConfirmationModal(false);
-  };
-
-  // Handle the actual deletion of the item
-  const submitDelete = (entityType, id) => {
-    //Setting the success message
-    setSuccessMessage(`The ${entityType} '${projects.find((x) => x.projectId === id).projectName}' was deleted successfully.`);
-    //Calling the actual delete method
-    deleteProject(id);
-    //After calling the delete method, we need to close the Modal    
-    setDisplayConfirmationModal(false);
-  };
-  // DELETE CONFIRM MODAL CODE END//
   
   return (
     <Card className="border border-dark bg-dark text-white">
@@ -85,7 +48,6 @@ const ProjectList = () => {
             </Button>
         </Card.Header>
         <Card.Body>
-            {successMessage && <Alert variant="success" align="center">{successMessage}</Alert>}
             <Table bordered hover striped variant="dark">
                 <thead>
                     <tr>
@@ -114,7 +76,7 @@ const ProjectList = () => {
                                 <td>
                                     <ButtonGroup>
                                         <Button href={`/edit-project/${project.projectId}`} size="sm" variant="outline-primary"><FontAwesomeIcon icon={faEdit} /></Button>{' '}
-                                        <Button onClick={() => showDeleteModal("Project", project.projectId)} size="sm" variant="outline-danger"><FontAwesomeIcon icon={faTrash} /></Button>
+                                        <Button onClick={()=> deleteProject(project.projectId)} size="sm" variant="outline-danger"><FontAwesomeIcon icon={faTrash} /></Button>
                                     </ButtonGroup>
                                 </td>
                             </tr>
@@ -123,7 +85,6 @@ const ProjectList = () => {
                 </tbody>
             </Table>
         </Card.Body>
-        <DeleteConfirmation showModal={displayConfirmationModal} hideModal={hideConfirmationModal} confirmModal={submitDelete} id={id} entityType={entityType} message={deleteMessage} />
     </Card>
   )
 }

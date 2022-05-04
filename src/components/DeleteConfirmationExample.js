@@ -23,7 +23,7 @@ const DeleteConfirmationExample = () => {
     ]);
   
     // Set up some additional local state
-    const [type, setType] = useState(null);
+    const [entityType, setEntityType] = useState(null);
     const [id, setId] = useState(null);
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
     const [deleteMessage, setDeleteMessage] = useState(null);
@@ -31,15 +31,15 @@ const DeleteConfirmationExample = () => {
     const [vegetableMessage, setVegetableMessage] = useState(null);
   
     // Handle the displaying of the modal based on type and id
-    const showDeleteModal = (type, id) => {
-      setType(type);
+    const showDeleteModal = (entityType, id) => {
+      setEntityType(entityType);
       setId(id);
       setFruitMessage(null);
       setVegetableMessage(null);
   
-      if (type === "fruit") {
+      if (entityType === "fruit") {
         setDeleteMessage(`Are you sure you want to delete the fruit '${fruits.find((x) => x.id === id).name}'?`);
-      } else if (type === "vegetable") {
+      } else if (entityType === "vegetable") {
         setDeleteMessage(`Are you sure you want to delete the vegetable '${vegetables.find((x) => x.id === id).name}'?`);
       }
   
@@ -52,11 +52,11 @@ const DeleteConfirmationExample = () => {
     };
   
     // Handle the actual deletion of the item
-    const submitDelete = (type, id) => {
-      if (type === "fruit") {
+    const submitDelete = (entityType, id) => {
+      if (entityType === "fruit") {
         setFruitMessage(`The fruit '${fruits.find((x) => x.id === id).name}' was deleted successfully.`);
         setFruits(fruits.filter((fruit) => fruit.id !== id));
-      } else if (type === "vegetable") {
+      } else if (entityType === "vegetable") {
         setVegetableMessage(`The vegetable '${vegetables.find((x) => x.id === id).name}' was deleted successfully.`);
         setVegetables(vegetables.filter((vegetable) => vegetable.id !== id));
       }
@@ -126,7 +126,7 @@ const DeleteConfirmationExample = () => {
             </Card>
           </Col>
         </Row>
-        <DeleteConfirmation showModal={displayConfirmationModal} hideModal={hideConfirmationModal} confirmModal={submitDelete} id={id} type={type} message={deleteMessage} />
+        <DeleteConfirmation showModal={displayConfirmationModal} hideModal={hideConfirmationModal} confirmModal={submitDelete} id={id} entityType={entityType} message={deleteMessage} />
       </Container>
     );
   };
