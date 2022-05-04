@@ -11,6 +11,7 @@ import Project from './components/Project';
 
 import Form from './components/Form';
 import ModalExample from './components/ModalExample';
+import DeleteConfirmationExample from './components/DeleteConfirmationExample';
 
 function App() {
   const marginTop = {
@@ -31,6 +32,7 @@ function App() {
               
               <Route path='/form-example' element={<Form />}></Route>
               <Route path='/modal-example' element={<ModalExample />}></Route>
+              <Route path='/delete-confirm-example' element={<DeleteConfirmationExample />}></Route>
             </Routes>
           </Col>
         </Row>

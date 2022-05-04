@@ -51,6 +51,7 @@ const ProjectList = () => {
             <Table bordered hover striped variant="dark">
                 <thead>
                     <tr>
+                        <th>Id</th>
                         <th>Project Name</th>
                         <th>Description</th>
                         <th>Enabled</th>
@@ -65,6 +66,7 @@ const ProjectList = () => {
                         projects.map(
                             project => 
                             <tr key={project.projectId}>
+                                <td>{project.projectId}</td>
                                 <td>{project.projectName}</td>
                                 <td>{project.projectDescription}</td>
                                 <td align='center'>{project.enabled? <AiOutlineCheck/> : <AiOutlineClose/> }</td>

@@ -1,4 +1,5 @@
 .special_modal .modal-content{
-    background-color: #000;
+    /*background-color: #000;*/
+    background-color: rgb(65, 63, 63);
     color: #fff;
  }
