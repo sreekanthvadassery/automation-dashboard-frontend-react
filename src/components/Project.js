@@ -2,10 +2,11 @@ import React ,{ useState, useEffect } from 'react'
 
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Card, Form, Button, Container } from 'react-bootstrap';
+import { Card, Form, Button, Container, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faPlusSquare, faUndo, faList } from '@fortawesome/free-solid-svg-icons'
 import ProjectService from '../services/ProjectService';
+import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai'
 
 //React React Forms Full Tutorial - Validation, React-Hook-Form, Yup
 //https://www.youtube.com/watch?v=UvH70UkbyfE&t=19s
@@ -15,6 +16,7 @@ import ProjectService from '../services/ProjectService';
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import SubmitConfirmation from './SubmitConfirmation';
 
 //Container style css
 const containerStyle = {
@@ -37,11 +39,31 @@ const Project = () => {
     resolver: yupResolver(schema),
   });
 
+  //Variables present in form
+  const [projectName, setProjectName] = useState('')
+  const [projectDescription, setProjectDescription] = useState('')
+  const [enabled, setEnabled] = useState(false)
+  //function to update the checkbox
+  const updateEnabled = () => setEnabled(!enabled);
+ 
+  //This variable is used for page navigation
+  const navigate = useNavigate();
+  //Finding whether any path variable present in  the request (For update we will be having the id present)
+  const {projectId} = useParams();
+
   //React-Hook-Form submit
-  const submitForm = (data) => {
+  /*const submitForm = (data) => {
     console.log(data);
     //Call saveOrUpdateProject()
     saveOrUpdateProject(data);
+  };*/
+  //React-Hook-Form submit (Modified to call the Modal function)
+  const submitForm = (data) => {
+    console.log(data);
+    //Data received from Form is being set to data variable
+    setData(data)
+    //Call show Modal function
+    showSubmitModal(data)
   };
 
   //Function which saves or update data, based on the presense of projectId
@@ -65,18 +87,6 @@ const Project = () => {
         })
     } 
   }
-
-  //Variables present in form
-  const [projectName, setProjectName] = useState('')
-  const [projectDescription, setProjectDescription] = useState('')
-  const [enabled, setEnabled] = useState(false)
-  //function to update the checkbox
-  const updateEnabled = () => setEnabled(!enabled);
-
-  //This variable is used for page navigation
-  const navigate = useNavigate();
-  //Finding whether any path variable present in  the request (For update we will be having the id present)
-  const {projectId} = useParams();
 
   //https://stackoverflow.com/questions/54069253/the-usestate-set-method-is-not-reflecting-a-change-immediately
   useEffect(() => {
@@ -119,6 +129,63 @@ const Project = () => {
     setProjectDescription('')
     setEnabled(false)
   }
+
+  // SUBMIT CONFIRM MODAL CODE START//
+  // Set up some additional local states for handling the Submit Confirmation Modal dialog box
+  const [data, setData] = useState(null);
+  const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+
+  // Handle the displaying of the Modal 
+  const showSubmitModal = (data) => {
+    //Setting the success message to null (Once the submit is completed, then only we need the success message)
+    setSuccessMessage(null);
+    //Setting the message which needs to be displayed inside Modal
+    //setDeleteMessage(`Are you sure you want to delete the ${entityType} '${projects.find((x) => x.projectId === id).projectName}' with ID: ${id}?`);
+    
+    //Provide the data that needs to be shown in Modal confirm body section
+    const modalBody = () => {
+        return <table size='sm' className='table text-white'>
+                    <thead>
+                        <tr>
+                            <th width="50%">ProjectName</th>
+                            <td width="50%">{data.projectName}</td>
+                        </tr>
+                        <tr>
+                            <th width="50%">Description</th>
+                            <td width="50%">{data.projectDescription}</td>
+                        </tr>
+                        <tr>
+                            <th width="50%">Enabled</th>
+                            <td width="50%">{data.enabled? <AiOutlineCheck/> : <AiOutlineClose/> }</td>
+                        </tr>
+                    </thead>
+                </table>
+    }
+    
+    setConfirmMessage(modalBody());
+
+    //setConfirmMessage(`Are you sure you want to Submit the data?`);
+    //We are setting this variable to true and pass it to the Modal so that it will show the Modal
+    setDisplayConfirmationModal(true);
+  };
+
+  // Hide the modal
+  const hideConfirmationModal = () => {
+    setDisplayConfirmationModal(false);
+  };
+
+  // Handle the actual form submission which is being called from Modal
+  const submitData = (data) => {
+    //Setting the success message
+    setSuccessMessage(`The form was submitted successfully.`);
+    //Call saveOrUpdateProject()
+    saveOrUpdateProject(data);
+    //After submitting the form, we need to close the Modal    
+    setDisplayConfirmationModal(false);
+  };
+  // SUBMIT CONFIRM MODAL CODE END//
 
   return (
     <Container style={containerStyle}>
@@ -195,6 +262,7 @@ const Project = () => {
                         <FontAwesomeIcon icon={faUndo} /> Reset
                     </Button>
                 </Card.Footer>
+                <SubmitConfirmation showModal={displayConfirmationModal} hideModal={hideConfirmationModal} confirmModal={submitData} data={data} message={confirmMessage} />
             </Form>
         </Card>
     </Container>
