@@ -7,15 +7,32 @@ import ProjectService from '../services/ProjectService';
 import {AiOutlineCheck,AiOutlineClose} from 'react-icons/ai'
 import DeleteConfirmation from './DeleteConfirmation';
 
+import {useLocation} from 'react-router-dom';
+
 const ProjectList = () => {
 
   const [projects, setProjects] = useState([])
 
+  //useLocation is used to get the data passed via useNavigate()
+  //https://stackoverflow.com/questions/52238637/react-router-how-to-pass-data-between-pages-in-react
+  const loc  = useLocation();
+  
   //this useEffect is used to load the data in list (on page load this will be called)
   useEffect(() => {
-    //calling the method 
+    //When we are saving or updating any value, we are passing a state 'dataSubmittedSuccessMessage' along with useNavigate() function
+    //Using useLocation hook we can get the state passed via useNavigate() function
+    //We are reading the state and assigning it to the successMessage state available in this component
+    //we need to set the state if and only if loc.state is present
+    if(loc.state){
+        //setting the data to existing successMessage state
+        setSuccessMessage(loc.state.dataSubmittedSuccessMessage)
+        //Once set the data clear it so that during page refresh the message will be disappeared
+        //https://stackoverflow.com/questions/53278986/how-to-clear-props-location-state-on-refresh
+        window.history.replaceState(null, '')
+    }
+    //calling the method for getting the list of Projects
     getAllProjects();
-  }, [])
+  }, [loc.state])
 
   //method for getting all the project details from back end
   const getAllProjects = () => {
@@ -46,7 +63,7 @@ const ProjectList = () => {
   const [deleteMessage, setDeleteMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  // Handle the displaying of the Modal based on type and id
+  // Handle the displaying of the Modal based on entityType and id
   const showDeleteModal = (entityType, id) => {
     setEntityType(entityType);
     setId(id);

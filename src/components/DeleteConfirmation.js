@@ -3,6 +3,7 @@ import { Modal, Button } from "react-bootstrap";
 
 import "../styles.css";
 
+//https://codemoto.io/coding/react/react-delete-confirmation-modal
 const DeleteConfirmation = ({ showModal, hideModal, confirmModal, id, entityType, message }) => {
   return (
     <Modal show={showModal} onHide={hideModal} className="special_modal">

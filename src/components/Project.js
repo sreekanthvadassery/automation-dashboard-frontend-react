@@ -2,7 +2,7 @@ import React ,{ useState, useEffect } from 'react'
 
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Card, Form, Button, Container, Alert } from 'react-bootstrap';
+import { Card, Form, Button, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faPlusSquare, faUndo, faList } from '@fortawesome/free-solid-svg-icons'
 import ProjectService from '../services/ProjectService';
@@ -72,7 +72,14 @@ const Project = () => {
     if(projectId){
         ProjectService.updateProject(projectId,data).then( (response) =>{
             console.log(response.data)
-            navigate('/project-list');
+            //navigate('/project-list');
+            //Navigating to project-list page with message
+            //https://stackoverflow.com/questions/52238637/react-router-how-to-pass-data-between-pages-in-react
+            navigate('/project-list', {
+                state: {
+                    dataSubmittedSuccessMessage:`Project '${data.projectName}' updated successfully!`
+                }
+            });
         }).catch(error => {
             console.log(error)
         })
@@ -81,7 +88,14 @@ const Project = () => {
     else{
         ProjectService.saveProject(data).then((response) => {
             console.log(response.data)
-            navigate('/project-list');
+            //navigate('/project-list');
+            //Navigating to project-list page with message
+            //https://stackoverflow.com/questions/52238637/react-router-how-to-pass-data-between-pages-in-react
+            navigate('/project-list', {
+                state: {
+                    dataSubmittedSuccessMessage:`Project '${data.projectName}' saved successfully!`
+                }
+            });
         }).catch(error => {
             console.log(error)
         })
@@ -135,16 +149,10 @@ const Project = () => {
   const [data, setData] = useState(null);
   const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
 
   // Handle the displaying of the Modal 
   const showSubmitModal = (data) => {
-    //Setting the success message to null (Once the submit is completed, then only we need the success message)
-    setSuccessMessage(null);
-    //Setting the message which needs to be displayed inside Modal
-    //setDeleteMessage(`Are you sure you want to delete the ${entityType} '${projects.find((x) => x.projectId === id).projectName}' with ID: ${id}?`);
-    
-    //Provide the data that needs to be shown in Modal confirm body section
+    //Create the data that needs to be shown in Modal confirm body section
     const modalBody = () => {
         return <table size='sm' className='table text-white'>
                     <thead>
@@ -163,10 +171,8 @@ const Project = () => {
                     </thead>
                 </table>
     }
-    
+    //Set Confirm Message state variable so that it can be viewed in Modal Body
     setConfirmMessage(modalBody());
-
-    //setConfirmMessage(`Are you sure you want to Submit the data?`);
     //We are setting this variable to true and pass it to the Modal so that it will show the Modal
     setDisplayConfirmationModal(true);
   };
@@ -178,8 +184,6 @@ const Project = () => {
 
   // Handle the actual form submission which is being called from Modal
   const submitData = (data) => {
-    //Setting the success message
-    setSuccessMessage(`The form was submitted successfully.`);
     //Call saveOrUpdateProject()
     saveOrUpdateProject(data);
     //After submitting the form, we need to close the Modal    
