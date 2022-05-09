@@ -37,7 +37,7 @@ const ProjectList = () => {
   //method for getting all the project details from back end
   const getAllProjects = () => {
     ProjectService.getAllProjects().then((response) => {
-        setProjects(response.data)
+        setProjects(response.data.content)
         console.log(response.data)
     }).catch(error => {
         console.log(error);
