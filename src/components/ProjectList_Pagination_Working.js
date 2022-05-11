@@ -1,4 +1,5 @@
 import React,{useState,useEffect} from 'react'
+import DataTable from 'react-data-table-component';
 
 import {Button, ButtonGroup, Card,  Table, Alert} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,7 +10,47 @@ import DeleteConfirmation from './DeleteConfirmation';
 
 import {useLocation} from 'react-router-dom';
 
-const ProjectList = () => {
+//columns used for react-data-table-component
+const columns = [
+    {
+        name: 'Id',
+        selector: row => row.projectId,
+        width: '14%',
+        sortable: true
+    },
+    {
+        name: 'Project Name',
+        selector: row => row.projectName,
+        width: '14%'
+    },
+    {
+        name: 'Description',
+        selector: row => row.projectDescription,
+        width: '14%'
+    },
+    {
+        name: 'Enabled',
+        selector: row => row.enabled,
+        width: '14%'
+    },
+    {
+        name: 'Created At',
+        selector: row => row.createdAt,
+        width: '14%'
+    },
+    {
+        name: 'Updated At',
+        selector: row => row.updatedAt,
+        width: '14%'
+    },
+    {
+        name: 'Last Updated By',
+        selector: row => row.lastUpdatedBy,
+        width: '14%'
+    },
+];
+
+const ProjectList_Pagination = () => {
 
   const [projects, setProjects] = useState([])
 
@@ -17,6 +58,7 @@ const ProjectList = () => {
   //https://stackoverflow.com/questions/52238637/react-router-how-to-pass-data-between-pages-in-react
   const loc  = useLocation();
   
+/*
   //this useEffect is used to load the data in list (on page load this will be called)
   useEffect(() => {
     //When we are saving or updating any value, we are passing a state 'dataSubmittedSuccessMessage' along with useNavigate() function
@@ -33,7 +75,7 @@ const ProjectList = () => {
     //calling the method for getting the list of Projects
     getAllProjects();
   }, [loc.state])
-
+*/
   //method for getting all the project details from back end
   const getAllProjects = () => {
     ProjectService.getAllProjects().then((response) => {
@@ -90,7 +132,47 @@ const ProjectList = () => {
     setDisplayConfirmationModal(false);
   };
   // DELETE CONFIRM MODAL CODE END//
+
+  // DATA TABLE CODE START //
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [items, setItems] = useState([]);
+  const [totalRows, setTotalRows] = useState(0);
+  const [perPage, setPerPage] = useState(10);
+
+  useEffect(() => {
+    fetchData(0, perPage);
+  }, [perPage])
+
+  const fetchData = async (page, per_page) => {
+    //axios.get(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${per_page}`)
+    console.log(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${per_page}`)
+    fetch(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${per_page}`)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          console.log(result.content)
+          setIsLoaded(true);
+          setItems(result.content);
+          setTotalRows(result.totalElements);
+        },
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      )
+  }
+
+  const handlePageChange = page => {
+    fetchData(page-1, perPage);
+  }
+
+  const handlePerRowsChange = async (newPerPage, page) => {
+    setPerPage(newPerPage);
+  }
+  // DATA TABLE CODE ENDS  //
   
+  /*
   return (
     <Card className="border border-dark bg-dark text-white">
         <Card.Header className='d-flex justify-content-between align-items-center'>
@@ -142,7 +224,45 @@ const ProjectList = () => {
         </Card.Body>
         <DeleteConfirmation showModal={displayConfirmationModal} hideModal={hideConfirmationModal} confirmModal={submitDelete} id={id} entityType={entityType} message={deleteMessage} />
     </Card>
-  )
+  )*/
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  } 
+  else if (!isLoaded) {
+    return <div>Loading...</div>;
+  } 
+  else {
+    return (
+      <Card className="border border-dark bg-dark text-white">
+        <Card.Header className='d-flex justify-content-between align-items-center'>
+            <div>
+                <FontAwesomeIcon icon={faList} /> <b>Project List</b>
+            </div>
+            <Button href='/save-project' className='float-right' size="sm" variant="success" type="button">
+                <FontAwesomeIcon icon={faPlusSquare} /> Add Project
+            </Button>
+        </Card.Header>
+        <Card.Body>
+            {successMessage && <Alert variant="success" align="center">{successMessage}</Alert>}
+            <div className="App">
+                <DataTable bordered hover striped variant="dark"
+                columns={columns}
+                data={items}
+                pagination
+                paginationServer
+                paginationTotalRows={totalRows}
+                onChangePage={handlePageChange}
+                onChangeRowsPerPage={handlePerRowsChange}
+                />
+            </div>
+        </Card.Body>
+        <DeleteConfirmation showModal={displayConfirmationModal} hideModal={hideConfirmationModal} confirmModal={submitDelete} id={id} entityType={entityType} message={deleteMessage} />
+    </Card>
+
+
+      
+    );
+  }
 }
 
-export default ProjectList
+export default ProjectList_Pagination
