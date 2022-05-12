@@ -75,16 +75,70 @@ const ProjectList_BSTable = () => {
        console.log(projects)
     }, [])
     
-    const pagination = paginationFactory({
-        page: 1,
-        sizePerPage: 5,
+    const customTotal = (from, to, size) => (
+      <span className="react-bootstrap-table-pagination-total">
+        Showing { from } to { to } of { size } Results
+      </span>
+    );    
+
+    const options = {
+        //page: 1,
+        //sizePerPage: 5,
         totalSize:25,
+        //paginationSize:5,
         showTotal: true,
+        //paginationTotalRenderer: customTotal,
         lastPageText: '>>',
         firstPageText: '<<',
         nextPageText: '>',
         prePageText: '<',
+        alwaysShowAllBtns: true,
+        sizePerPageList: [
+            {
+              text: "5",
+              value: 5
+            },
+            {
+              text: "10",
+              value: 10
+            },
+            {
+              text: "25",
+              value: 25
+            },
+            {
+              text: "50",
+              value: 50
+            },
+            {
+              text: "100",
+              value: 100
+            }
+        ],
+        onPageChange: function (page,sizePerPage ) {
+          console.log('page', page);
+          console.log('sizePerPage', sizePerPage);
+          getProjectData2(page,sizePerPage);
+        },
+        onSizePerPageChange: function (sizePerPage,page) {
+          console.log('page', page);
+          console.log('sizePerPage', sizePerPage);
+          getProjectData2(page,sizePerPage);
+        }
+    }
+
+    /*
+    const pagination = paginationFactory({
+        page: 1,
+        sizePerPage: 5,
+        totalSize:25,
+        //paginationSize:5,
         showTotal: true,
+        //paginationTotalRenderer: customTotal,
+        lastPageText: '>>',
+        firstPageText: '<<',
+        nextPageText: '>',
+        prePageText: '<',
         alwaysShowAllBtns: true,
         sizePerPageList: [
             {
@@ -119,6 +173,7 @@ const ProjectList_BSTable = () => {
           getProjectData2(page,sizePerPage);
         }
     });
+*/
 
     const onTableChange = (type, newState) => {
       console.log('type:'+type);
@@ -143,7 +198,7 @@ const ProjectList_BSTable = () => {
                     
                     <BootstrapTable /*rowStyle={ bootstrapTableStyle }*/ 
                         
-                    wrapperClasses="table-responsive"
+                        wrapperClasses="table-responsive"
                         onTableChange={ onTableChange } 
                         noDataIndication="No results!"
                         keyField='projectId'
@@ -151,7 +206,8 @@ const ProjectList_BSTable = () => {
                         data={projects}
                         columns={columns}
                         //pagination={paginationFactory()}
-                        pagination={pagination}
+                        //pagination={pagination}
+                        pagination={paginationFactory(options)}
                         //condensed
                         bootstrap4
                         //striped
