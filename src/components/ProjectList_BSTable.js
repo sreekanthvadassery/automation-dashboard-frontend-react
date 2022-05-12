@@ -19,32 +19,7 @@ const ProjectList_BSTable = () => {
     const [loading, setLoading] = useState(false);
     const [totalElements,setTotalElements] = useState(0);
 
-   /* const getProjectData = async () => {
-        try {
-            const data = await axios.get(
-                //"https://nba-players.herokuapp.com/players-stats"
-                "http://localhost:8080/api/v1/project/find-all"
-            );
-          //  console.log(data);
-          //  setProjects(data.data);
-            console.log(data.data.console);
-            setProjects(data.data);
-            setLoading(true)
-        } catch (error) {
-            console.log(error)
-        }
-    };*/
-  /* const getProjectData = () => {
-        axios.get('http://localhost:8080/api/v1/project/find-all').then((response) => {
-            console.log(response.data);
-            setProjects(response.data.content);
-            setLoading(true)
-        }).catch(error => {
-            console.log(error);
-        })
-      }
-*/
-    const getProjectData2 =  (page, sizePerPage) => {
+    const getProjectData =  (page, sizePerPage) => {
         console.log(`http://localhost:8080/api/v1/project/find-all?page=${page-1}&size=${sizePerPage}`)
         axios.get(`http://localhost:8080/api/v1/project/find-all?page=${page-1}&size=${sizePerPage}`).then((response) => {
             console.log(response.data);
@@ -55,7 +30,7 @@ const ProjectList_BSTable = () => {
         }).catch(error => {
             console.log(error);
         })
-      }
+    }
 
     const columns =[
         {dataField: "projectId", text: "Project Id",sort: true},
@@ -69,8 +44,7 @@ const ProjectList_BSTable = () => {
       }];
 
     useEffect(() => {
-       // getProjectData();
-       getProjectData2(1,5);
+       getProjectData(1,5);
        console.log('inside useEffect')
        console.log(projects)
     }, [])
@@ -88,8 +62,8 @@ const ProjectList_BSTable = () => {
         //paginationSize:5,
         showTotal: true,
         //paginationTotalRenderer: customTotal,
-        lastPageText: '>>',
-        firstPageText: '<<',
+        lastPageText: 'Last',
+        firstPageText: 'First',
         nextPageText: '>',
         prePageText: '<',
         alwaysShowAllBtns: true,
@@ -118,62 +92,14 @@ const ProjectList_BSTable = () => {
         onPageChange: function (page,sizePerPage ) {
           console.log('page', page);
           console.log('sizePerPage', sizePerPage);
-          getProjectData2(page,sizePerPage);
+          getProjectData(page,sizePerPage);
         },
         onSizePerPageChange: function (sizePerPage,page) {
           console.log('page', page);
           console.log('sizePerPage', sizePerPage);
-          getProjectData2(page,sizePerPage);
+          getProjectData(page,sizePerPage);
         }
     }
-
-    /*
-    const pagination = paginationFactory({
-        page: 1,
-        sizePerPage: 5,
-        totalSize:25,
-        //paginationSize:5,
-        showTotal: true,
-        //paginationTotalRenderer: customTotal,
-        lastPageText: '>>',
-        firstPageText: '<<',
-        nextPageText: '>',
-        prePageText: '<',
-        alwaysShowAllBtns: true,
-        sizePerPageList: [
-            {
-              text: "5",
-              value: 5
-            },
-            {
-              text: "10",
-              value: 10
-            },
-            {
-              text: "25",
-              value: 25
-            },
-            {
-              text: "50",
-              value: 50
-            },
-            {
-              text: "100",
-              value: 100
-            }
-        ],
-        onPageChange: function (page,sizePerPage ) {
-          console.log('page', page);
-          console.log('sizePerPage', sizePerPage);
-          getProjectData2(page,sizePerPage);
-        },
-        onSizePerPageChange: function (sizePerPage,page) {
-          console.log('page', page);
-          console.log('sizePerPage', sizePerPage);
-          getProjectData2(page,sizePerPage);
-        }
-    });
-*/
 
     const onTableChange = (type, newState) => {
       console.log('type:'+type);
@@ -181,9 +107,9 @@ const ProjectList_BSTable = () => {
       console.log('size per page:'+newState.sizePerPage);
       // handle any data change here
 
-      if(type==='pagination'){
-        getProjectData2(newState.page,newState.sizePerPage);
-      }
+     // if(type==='pagination'){
+       // getProjectData(newState.page,newState.sizePerPage);
+      //}
     }
 
     return (
@@ -196,7 +122,7 @@ const ProjectList_BSTable = () => {
             <Card.Body>
                 {loading ? (
                     
-                    <BootstrapTable /*rowStyle={ bootstrapTableStyle }*/ 
+                    <BootstrapTable /*rowStyle={ bootstrapTableStyle } */
                         
                         wrapperClasses="table-responsive"
                         onTableChange={ onTableChange } 
@@ -210,11 +136,10 @@ const ProjectList_BSTable = () => {
                         pagination={paginationFactory(options)}
                         //condensed
                         bootstrap4
-                        //striped
+                        striped
                         hover
-                        //bootstrapTableStyle
+                        bootstrapTableStyle
                         remote
-                        
                     />
                     
                 ) : (
