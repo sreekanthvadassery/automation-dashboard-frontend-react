@@ -58,7 +58,7 @@ const ProjectList_BSTable = () => {
     const options = {
         //page: 1,
         //sizePerPage: 5,
-        totalSize:25,
+        totalSize:totalElements,
         //paginationSize:5,
         showTotal: true,
         //paginationTotalRenderer: customTotal,
@@ -131,8 +131,6 @@ const ProjectList_BSTable = () => {
                         defaultSorted={defaultSorted}
                         data={projects}
                         columns={columns}
-                        //pagination={paginationFactory()}
-                        //pagination={pagination}
                         pagination={paginationFactory(options)}
                         //condensed
                         bootstrap4
