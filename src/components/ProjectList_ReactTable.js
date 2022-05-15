@@ -10,6 +10,19 @@ import { format } from 'date-fns'
 //Reference: https://www.youtube.com/playlist?list=PLC3y8-rFHvwgWTSrDiwmUsl4ZvipOw9Cz
 const ProjectList_ReactTable = () => {
 
+    /*const getProjectData =  (page, sizePerPage) => {
+        console.log(`http://localhost:8080/api/v1/project/find-all?page=${page-1}&size=${sizePerPage}`)
+        axios.get(`http://localhost:8080/api/v1/project/find-all?page=${page-1}&size=${sizePerPage}`).then((response) => {
+            console.log(response.data);
+            console.log('Total Elements: '+ response.data.totalElements);
+            setProjects(response.data.content);
+            setLoading(true);
+            setTotalElements(response.data.totalElements)
+        }).catch(error => {
+            console.log(error);
+        })
+    }*/
+
     const COLUMNS = [
         {
             Header: 'ID',
@@ -55,15 +68,19 @@ const ProjectList_ReactTable = () => {
         gotoPage,
         pageCount,
         setPageSize,
-        state,
+        state: { pageIndex, pageSize },
         prepareRow
-    } = useTable({
-        columns,
-        data
-        //,initialState: {pageIndex : 0}
-    },useSortBy,usePagination)
+    } = useTable(
+        {
+            columns,
+            data,
+            initialState: {pageIndex : 0, pageSize : 10}
+        },
+        useSortBy,
+        usePagination
+    );
 
-    const {pageIndex , pageSize} = state
+    //const {pageIndex , pageSize} = state
   
     return (
 

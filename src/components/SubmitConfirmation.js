@@ -10,7 +10,7 @@ const SubmitConfirmation = ({ showModal, hideModal, confirmModal, data, message 
   return (
     <Modal show={showModal} onHide={hideModal} className="special_modal">
       <Modal.Header closeButton>
-        <Modal.Title>Are you sure to Submit the data?</Modal.Title>
+        <Modal.Title>Are you sure to submit the data?</Modal.Title>
       </Modal.Header>
       <Modal.Body><div>{message}</div></Modal.Body>
       <Modal.Footer>

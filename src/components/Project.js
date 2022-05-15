@@ -127,13 +127,23 @@ const Project = () => {
     }
   }, [projectName,projectDescription,enabled,projectId,reset])
  
-  //Function to update the page tile (Add or Update)
+  //Function to update the page title (Add or Update)
   const title = () => {
     if(projectId){
         return 'Update Project'
     }
     else{
         return 'Add Project'
+    }
+  }
+
+  //Function to find Save or Update
+  const saveOrUpdate = () => {
+    if(projectId){
+        return 'Update'
+    }
+    else{
+        return 'Save'
     }
   }
 
@@ -260,7 +270,7 @@ const Project = () => {
                 </Card.Body>
                 <Card.Footer style={{textAlign:"right"}}>
                     <Button size="sm" variant="success" type="submit">
-                        <FontAwesomeIcon icon={faSave} /> Submit
+                        <FontAwesomeIcon icon={faSave} /> {saveOrUpdate()}
                     </Button>{' '}
                     <Button size="sm" variant="info" type="reset">
                         <FontAwesomeIcon icon={faUndo} /> Reset
