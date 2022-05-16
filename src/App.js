@@ -15,6 +15,7 @@ import PaginationExample from './components/PaginationExample';
 import ProjectList_Pagination from './components/ProjectList_Pagination';
 import ProjectList_BSTable from './components/ProjectList_BSTable';
 import ProjectList_ReactTable from './components/ProjectList_ReactTable';
+import ServerSidePagination from './components/ServerSidePagination';
 
 function App() {
   const marginTop = {
@@ -40,6 +41,12 @@ function App() {
               <Route path='/project-list-pagination' element={<ProjectList_Pagination />}></Route>
               <Route path='/project-list-bspagination' element={<ProjectList_BSTable />}></Route>
               <Route path='/project-list-react-table' element={<ProjectList_ReactTable/>}></Route>
+
+              
+              <Route path='/server-side-pagination' element={<ServerSidePagination/>}></Route>
+              
+              
+
             </Routes>
           </Col>
         </Row>

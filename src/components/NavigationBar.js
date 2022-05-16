@@ -18,6 +18,7 @@ const NavigationBar = () => {
                     <NavDropdown.Item href="/project-list-pagination">Project List Pagination</NavDropdown.Item>
                     <NavDropdown.Item href="/project-list-bspagination">Project List BSPagination</NavDropdown.Item>
                     <NavDropdown.Item href="/project-list-react-table">Project List React Table</NavDropdown.Item>
+                    <NavDropdown.Item href="/server-side-pagination">Server Side Pagination</NavDropdown.Item>
                     
                     <NavDropdown.Item href="/form-example">Form Example</NavDropdown.Item>
                     <NavDropdown.Item href="/delete-confirm-example">Delete Confirm Example</NavDropdown.Item>
