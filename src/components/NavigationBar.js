@@ -15,6 +15,7 @@ const NavigationBar = () => {
                 <NavDropdown title="Project" id="navbarScrollingDropdown" menuVariant="dark">
                     <NavDropdown.Item href="/save-project">Add Project</NavDropdown.Item>
                     <NavDropdown.Item href="/project-list">Project List</NavDropdown.Item>
+                    <NavDropdown.Item href="/project-list-final">Project List Final</NavDropdown.Item>
                     <NavDropdown.Item href="/project-list-pagination">Project List Pagination</NavDropdown.Item>
                     <NavDropdown.Item href="/project-list-bspagination">Project List BSPagination</NavDropdown.Item>
                     <NavDropdown.Item href="/project-list-react-table">Project List React Table</NavDropdown.Item>

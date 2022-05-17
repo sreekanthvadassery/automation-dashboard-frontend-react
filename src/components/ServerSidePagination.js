@@ -104,6 +104,8 @@ const ServerSidePagination = () => {
             `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${pageSize}`
           );
           const data = await response.json();
+
+          console.log(data)
       
           return data;
         } 

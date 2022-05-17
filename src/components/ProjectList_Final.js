@@ -1,89 +1,182 @@
-import React, { useMemo}  from 'react'
-import { useTable, useSortBy, usePagination } from 'react-table'
-import MOCK_DATA from './MOCK_DATA.json'
+import React from 'react'
+import { useTable, useSortBy,usePagination } from 'react-table';
+import { useQuery } from 'react-query';
+import { QueryClientProvider, QueryClient } from 'react-query';
 import BTable from 'react-bootstrap/Table';
 import {Button, Card} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList, faPlusSquare,faAngleRight,faAngleLeft,faAnglesLeft,faAnglesRight } from '@fortawesome/free-solid-svg-icons'
-import { format } from 'date-fns'
+import axios from 'axios'
 
-//Reference: https://www.youtube.com/playlist?list=PLC3y8-rFHvwgWTSrDiwmUsl4ZvipOw9Cz
-const ProjectList_ReactTable = () => {
+const queryClient = new QueryClient();
 
-    /*const getProjectData =  (page, sizePerPage) => {
-        console.log(`http://localhost:8080/api/v1/project/find-all?page=${page-1}&size=${sizePerPage}`)
-        axios.get(`http://localhost:8080/api/v1/project/find-all?page=${page-1}&size=${sizePerPage}`).then((response) => {
+const columns = [
+    {
+      Header: 'Id',
+      accessor: 'projectId',
+    },
+    {
+      Header: 'Project Name',
+      accessor: 'projectName',
+    },
+    {
+      Header: 'Description',
+      accessor: 'projectDescription',
+    },
+];
+
+
+const trimData = (data = []) =>
+  data.map(({ projectId, projectName, projectDescription }) => ({
+    projectId,
+    projectName,
+    projectDescription
+  })
+);
+
+
+const initialState = {
+  queryPageIndex: 0,
+  queryPageSize: 10,
+  totalCount: null,
+};
+
+const PAGE_CHANGED = 'PAGE_CHANGED';
+const PAGE_SIZE_CHANGED = 'PAGE_SIZE_CHANGED';
+const TOTAL_COUNT_CHANGED = 'TOTAL_COUNT_CHANGED';
+
+const reducer = (state, { type, payload }) => {
+  switch (type) {
+    case PAGE_CHANGED:
+      return {
+        ...state,
+        queryPageIndex: payload,
+      };
+    case PAGE_SIZE_CHANGED:
+      return {
+        ...state,
+        queryPageSize: payload,
+      };
+    case TOTAL_COUNT_CHANGED:
+      return {
+        ...state,
+        totalCount: payload,
+      };
+    default:
+      throw new Error(`Unhandled action type: ${type}`);
+  }
+};
+
+
+const ProjectList_Final = () => {
+
+/*
+    const getProjectData =  (page, pageSize) => {
+        console.log(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`)
+        axios.get(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`).then((response) => {
             console.log(response.data);
-            console.log('Total Elements: '+ response.data.totalElements);
-            setProjects(response.data.content);
-            setLoading(true);
-            setTotalElements(response.data.totalElements)
+            
+            return response.data.content;
+            
+            
         }).catch(error => {
             console.log(error);
         })
-    }*/
+    }
+*/
+    const getProjectData = async (page, pageSize) => {
+        console.log(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`)
+        try {
+          const response = await fetch(
+            `http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`
+          );
+          const data = await response.json();
 
-    const COLUMNS = [
-        {
-            Header: 'ID',
-            accessor: 'id'
-        },
-        {
-            Header: 'First Name',
-            accessor: 'first_name'
-        },
-        {
-            Header: 'Last Name',
-            accessor: 'last_name'
-        },
-        {
-            Header: 'Date Of Birth',
-            accessor: 'date_of_birth',
-            Cell: ({ value }) => {return format(new Date(value),'dd/MM/yyyy HH:mm:ss')}
-        },
-        {
-            Header: 'Country',
-            accessor: 'country'
-        },
-        {
-            Header: 'Phone',
-            accessor: 'phone'
+          console.log(data)
+
+          return data;
+        } 
+        catch (e) {
+          throw new Error(`API error:${e?.message}`);
         }
-    ]
+    };
 
-    //useMemo ensures that data is not being recreated in every render and improves performance
-    const columns = useMemo(() => COLUMNS,[])
-    const data = useMemo(() => MOCK_DATA,[])
+    const [{ queryPageIndex, queryPageSize, totalCount }, dispatch] =
+        React.useReducer(reducer, initialState);
+
+    const { isLoading, error, data, isSuccess } = useQuery(
+        ['pokemons', queryPageIndex, queryPageSize],
+        () => getProjectData(queryPageIndex, queryPageSize),
+        {
+            keepPreviousData: true,
+            staleTime: Infinity,
+        }
+    );
 
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
+        prepareRow,
         page,
+        canPreviousPage,
+        canNextPage,
+        pageOptions,
+        pageCount,
+        gotoPage,
         nextPage,
         previousPage,
-        canNextPage,
-        canPreviousPage,
-        pageOptions,
-        gotoPage,
-        pageCount,
         setPageSize,
+        // Get the state from the instance
         state: { pageIndex, pageSize },
-        prepareRow
     } = useTable(
         {
-            columns,
-            data,
-            initialState: {pageIndex : 0, pageSize : 10}
+          columns,
+          //data: isSuccess ? trimData(data.results) : [],
+          data: isSuccess ? trimData(data.content) : [],
+          initialState: {
+            pageIndex: queryPageIndex,
+            pageSize: queryPageSize,
+          },
+          manualPagination: true, // Tell the usePagination
+          // hook that we'll handle our own data fetching
+          // This means we'll also have to provide our own
+          // pageCount.
+          pageCount: isSuccess ? Math.ceil(totalCount / queryPageSize) : null,
         },
-        useSortBy,
         usePagination
     );
 
-    //const {pageIndex , pageSize} = state
-  
-    return (
+    React.useEffect(() => {
+        dispatch({ type: PAGE_CHANGED, payload: pageIndex });
+    }, [pageIndex]);
+    
+    React.useEffect(() => {
+        dispatch({ type: PAGE_SIZE_CHANGED, payload: pageSize });
+        gotoPage(0);
+    }, [pageSize, gotoPage]);
+    
+    React.useEffect(() => {
+       // if (data?.count) {
+        if (data?.totalElements) {
+            dispatch({
+                type: TOTAL_COUNT_CHANGED,
+                //payload: data.count,
+                payload: data.totalElements,
+            });
+        }
+    //}, [data?.count]);
+    }, [data?.totalElements]);
+    
+    if (error) {
+        return <p>Error</p>;
+    }
 
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
+
+    return (
         <Card className="border border-dark bg-dark text-white">
             <Card.Header className='d-flex justify-content-between align-items-center'>
                 <div>
@@ -101,15 +194,8 @@ const ProjectList_ReactTable = () => {
                                 <tr {...headerGroup.getHeaderGroupProps()}>
                                     {
                                         headerGroup.headers.map((column) =>(
-                                            <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                            <th {...column.getHeaderProps()}>
                                                 {column.render('Header')}
-                                                <span>
-                                                    {column.isSorted
-                                                    ? column.isSortedDesc
-                                                        ? ' 🔽'
-                                                        : ' 🔼'
-                                                    : ''}
-                                                </span>
                                             </th>
                                         ))
                                     }
@@ -182,4 +268,10 @@ const ProjectList_ReactTable = () => {
     )
 }
 
-export default ProjectList_ReactTable
+//export default ProjectList_Final
+export default function Wraped(){
+    return(<QueryClientProvider client={queryClient}>
+            <ProjectList_Final/>
+        </QueryClientProvider>
+    );       
+}

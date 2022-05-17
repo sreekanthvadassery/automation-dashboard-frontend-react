@@ -16,6 +16,7 @@ import ProjectList_Pagination from './components/ProjectList_Pagination';
 import ProjectList_BSTable from './components/ProjectList_BSTable';
 import ProjectList_ReactTable from './components/ProjectList_ReactTable';
 import ServerSidePagination from './components/ServerSidePagination';
+import ProjectList_Final from './components/ProjectList_Final';
 
 function App() {
   const marginTop = {
@@ -33,6 +34,7 @@ function App() {
               <Route path='/save-project' element={<Project />}></Route>
               <Route path='/project-list' element={<ProjectList />}></Route>
               <Route path='/edit-project/:projectId' element={<Project />}></Route>
+              <Route path='/project-list-final' element={<ProjectList_Final />}></Route>
               
               
               <Route path='/form-example' element={<Form />}></Route>
