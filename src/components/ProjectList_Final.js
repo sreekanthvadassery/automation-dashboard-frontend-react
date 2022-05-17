@@ -6,7 +6,9 @@ import BTable from 'react-bootstrap/Table';
 import {Button, Card} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList, faPlusSquare,faAngleRight,faAngleLeft,faAnglesLeft,faAnglesRight } from '@fortawesome/free-solid-svg-icons'
-import axios from 'axios'
+import { format } from 'date-fns'
+import {AiOutlineCheck,AiOutlineClose} from 'react-icons/ai'
+
 
 const queryClient = new QueryClient();
 
@@ -23,14 +25,37 @@ const columns = [
       Header: 'Description',
       accessor: 'projectDescription',
     },
+    {
+        Header: 'Enabled',
+        accessor: 'enabled',
+        Cell: ({ value }) => {return value? <div style={{ textAlign: "center" }}><AiOutlineCheck/></div> : <div style={{ textAlign: "center" }}><AiOutlineClose/></div>}
+    },
+    {
+        Header: 'Created At',
+        accessor: 'createdAt',
+        Cell: ({ value }) => {return format(new Date(value),'dd/MM/yyyy HH:mm:ss')}
+    },
+    {
+        Header: 'Updated At',
+        accessor: 'updatedAt',
+        Cell: ({ value }) => {return format(new Date(value),'dd/MM/yyyy HH:mm:ss')}
+    },
+    {
+        Header: 'Last Updated By',
+        accessor: 'lastUpdatedBy',
+    },
 ];
 
 
 const trimData = (data = []) =>
-  data.map(({ projectId, projectName, projectDescription }) => ({
+  data.map(({ projectId, projectName, projectDescription,enabled,createdAt,updatedAt,lastUpdatedBy }) => ({
     projectId,
     projectName,
-    projectDescription
+    projectDescription,
+    enabled,
+    createdAt,
+    updatedAt,
+    lastUpdatedBy
   })
 );
 
@@ -67,26 +92,9 @@ const reducer = (state, { type, payload }) => {
   }
 };
 
-
+//Reference: https://www.youtube.com/playlist?list=PLC3y8-rFHvwgWTSrDiwmUsl4ZvipOw9Cz
+//         : https://dev.to/elangobharathi/server-side-pagination-using-react-table-v7-and-react-query-v3-3lck
 const ProjectList_Final = () => {
-
-
-   /* const getProjectData =  (page, pageSize) => {
-        console.log(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`)
-        axios.get(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`).then((response) => {
-            console.log(response.data);
-            
-            const data = response;
-
-            console.log(data)
-  
-            return data;
-            
-            
-        }).catch(error => {
-            console.log(error);
-        })
-    }*/
 
     const getProjectData = async (page, pageSize) => {
         console.log(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`)

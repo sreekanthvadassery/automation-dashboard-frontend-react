@@ -4,7 +4,6 @@ import { useTable, usePagination } from 'react-table';
 import { useQuery } from 'react-query';
 
 import { QueryClientProvider, QueryClient } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 const queryClient = new QueryClient();
 
