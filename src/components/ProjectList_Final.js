@@ -1,5 +1,5 @@
 import React from 'react'
-import { useTable, useSortBy,usePagination } from 'react-table';
+import { useTable,usePagination } from 'react-table';
 import { useQuery } from 'react-query';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import BTable from 'react-bootstrap/Table';
@@ -70,20 +70,24 @@ const reducer = (state, { type, payload }) => {
 
 const ProjectList_Final = () => {
 
-/*
-    const getProjectData =  (page, pageSize) => {
+
+   /* const getProjectData =  (page, pageSize) => {
         console.log(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`)
         axios.get(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`).then((response) => {
             console.log(response.data);
             
-            return response.data.content;
+            const data = response;
+
+            console.log(data)
+  
+            return data;
             
             
         }).catch(error => {
             console.log(error);
         })
-    }
-*/
+    }*/
+
     const getProjectData = async (page, pageSize) => {
         console.log(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`)
         try {
@@ -105,7 +109,7 @@ const ProjectList_Final = () => {
         React.useReducer(reducer, initialState);
 
     const { isLoading, error, data, isSuccess } = useQuery(
-        ['pokemons', queryPageIndex, queryPageSize],
+        ['projects', queryPageIndex, queryPageSize],
         () => getProjectData(queryPageIndex, queryPageSize),
         {
             keepPreviousData: true,
@@ -222,45 +226,47 @@ const ProjectList_Final = () => {
                     </tbody>
                 </BTable>
             </Card.Body>
-            <Card.Footer style={{textAlign:"right"}}>
-                
-                <span>
-                    <i>Page{' '} <strong> {pageIndex + 1} of {pageOptions.length}</strong>{'  '}</i>
-                </span>
-                <span>
-                    | Go to page: {' '}
-                    <input className="bg-dark text-white border border-white rounded-pill" type='number' defaultValue={pageIndex + 1}
-                        onChange={ e => {
-                            const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0
-                            gotoPage(pageNumber)
-                        }}
-                        style={{width: '60px'}}
-                    />
-                </span>
-                {' '}
-                <select value={pageSize} onChange={e => setPageSize(Number(e.target.value))} className="bg-dark text-white border border-white">
-                    {
-                        [10,25,50,100].map(pageSize =>(
-                            <option key={pageSize} value={pageSize}>
-                                Show {pageSize}
-                            </option>
-                        ))
-                    }
-                </select>
-                 {' '}
-                <Button onClick={ () => gotoPage(0)} disabled={!canPreviousPage} size="sm" variant="secondary" type="button" className='rounded-pill'>
-                    <b><FontAwesomeIcon icon={faAnglesLeft} /> First</b>
-                </Button>{' '}
-                <Button onClick={ () => previousPage()} disabled={!canPreviousPage} size="sm" variant="secondary" type="button" className='rounded-pill'>
-                    <b><FontAwesomeIcon icon={faAngleLeft} /> Prev</b>
-                </Button>{' '}
-                <Button onClick={ () => nextPage()} disabled={!canNextPage} size="sm" variant="secondary" type="button" className='rounded-pill'>
-                    <b>Next <FontAwesomeIcon icon={faAngleRight} /></b>
-                </Button> {' '}   
-                <Button onClick={ () => gotoPage(pageCount - 1)} disabled={!canNextPage} size="sm" variant="secondary" type="button" className='rounded-pill'>
-                    <b>Last <FontAwesomeIcon icon={faAnglesRight} /></b>
-                </Button>   
-                
+            <Card.Footer /*style={{textAlign:"right"}}*/ className='d-flex justify-content-between '>
+                <div className='float-left'>
+                    <span>
+                        <i>Page{' '} <strong> {pageIndex + 1} of {pageOptions.length}</strong>{'   '}</i>
+                    </span>
+                    <span>
+                        | Go to page: {' '}
+                        <input className="bg-dark text-white border border-white rounded-pill" type='number' defaultValue={pageIndex + 1}
+                            onChange={ e => {
+                                const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0
+                                gotoPage(pageNumber)
+                            }}
+                            style={{width: '60px'}}
+                        />
+                    </span>
+                    {' '}{' '}
+                    <select value={pageSize} onChange={e => setPageSize(Number(e.target.value))} className="bg-dark text-white border border-white">
+                        {
+                            [10,25,50,100].map(pageSize =>(
+                                <option key={pageSize} value={pageSize}>
+                                    Show {pageSize}
+                                </option>
+                            ))
+                        }
+                    </select>
+                    {' '}
+                </div>
+                <div className='float-right'>
+                    <Button onClick={ () => gotoPage(0)} disabled={!canPreviousPage} size="sm" variant="secondary" type="button" className='rounded-pill'>
+                        <b><FontAwesomeIcon icon={faAnglesLeft} /> First</b>
+                    </Button>{' '}
+                    <Button onClick={ () => previousPage()} disabled={!canPreviousPage} size="sm" variant="secondary" type="button" className='rounded-pill'>
+                        <b><FontAwesomeIcon icon={faAngleLeft} /> Prev</b>
+                    </Button>{' '}
+                    <Button onClick={ () => nextPage()} disabled={!canNextPage} size="sm" variant="secondary" type="button" className='rounded-pill'>
+                        <b>Next <FontAwesomeIcon icon={faAngleRight} /></b>
+                    </Button> {' '}   
+                    <Button onClick={ () => gotoPage(pageCount - 1)} disabled={!canNextPage} size="sm" variant="secondary" type="button" className='rounded-pill'>
+                        <b>Last <FontAwesomeIcon icon={faAnglesRight} /></b>
+                    </Button>   
+                </div>
             </Card.Footer>
             <br></br>
             <br></br>
