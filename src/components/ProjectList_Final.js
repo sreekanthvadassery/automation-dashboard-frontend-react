@@ -3,9 +3,9 @@ import { useTable,usePagination } from 'react-table';
 import { useQuery } from 'react-query';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import BTable from 'react-bootstrap/Table';
-import {Button, Card} from 'react-bootstrap';
+import {Button, Card, ButtonGroup} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faList, faPlusSquare,faAngleRight,faAngleLeft,faAnglesLeft,faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+import { faList, faPlusSquare,faAngleRight,faAngleLeft,faAnglesLeft,faAnglesRight,faEdit } from '@fortawesome/free-solid-svg-icons'
 import { format } from 'date-fns'
 import {AiOutlineCheck,AiOutlineClose} from 'react-icons/ai'
 
@@ -43,6 +43,15 @@ const columns = [
     {
         Header: 'Last Updated By',
         accessor: 'lastUpdatedBy',
+    },
+    {
+        Header: 'Actions',
+        Cell: row => (
+            <ButtonGroup>
+                <Button href={`/edit-project/${row.row.original.projectId}`} size="sm" variant="outline-primary"><FontAwesomeIcon icon={faEdit} /></Button>{' '}
+                
+            </ButtonGroup>
+        )
     },
 ];
 
