@@ -1,20 +1,64 @@
-import React ,{ useEffect, useState, useMemo } from 'react'
+import React ,{useEffect, useState, useMemo} from 'react'
 import { useTable,usePagination } from 'react-table';
 import { useQuery } from 'react-query';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import BTable from 'react-bootstrap/Table';
-import { Button, Card, ButtonGroup,Alert} from 'react-bootstrap';
+import {Button, Card, ButtonGroup,Alert} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList, faPlusSquare,faAngleRight,faAngleLeft,faAnglesLeft,faAnglesRight,faEdit,faTrash } from '@fortawesome/free-solid-svg-icons'
 import { format } from 'date-fns'
-import { AiOutlineCheck,AiOutlineClose } from 'react-icons/ai'
-import { useLocation } from 'react-router-dom';
+import {AiOutlineCheck,AiOutlineClose} from 'react-icons/ai'
+import {useLocation} from 'react-router-dom';
 import ProjectService from '../services/ProjectService';
 import DeleteConfirmation from './DeleteConfirmation';
 
 const queryClient = new QueryClient();
 
-// Data that we receive from API needs to be mapped
+
+/*const columns = [
+    {
+        Header: 'Id',
+        accessor: 'projectId',
+    },
+    {
+        Header: 'Project Name',
+        accessor: 'projectName',
+    },
+    {
+        Header: 'Description',
+        accessor: 'projectDescription',
+    },
+    {
+        Header: 'Enabled',
+        accessor: 'enabled',
+        Cell: ({ value }) => {return value? <div style={{ textAlign: "center" }}><AiOutlineCheck/></div> : <div style={{ textAlign: "center" }}><AiOutlineClose/></div>}
+    },
+    {
+        Header: 'Created At',
+        accessor: 'createdAt',
+        Cell: ({ value }) => {return format(new Date(value),'dd/MM/yyyy HH:mm:ss')}
+    },
+    {
+        Header: 'Updated At',
+        accessor: 'updatedAt',
+        Cell: ({ value }) => {return format(new Date(value),'dd/MM/yyyy HH:mm:ss')}
+    },
+    {
+        Header: 'Last Updated By',
+        accessor: 'lastUpdatedBy',
+    },
+    {
+        Header: 'Actions',
+        Cell: row => (
+            <ButtonGroup>
+                <Button href={`/edit-project/${row.row.original.projectId}`} size="sm" variant="outline-primary"><FontAwesomeIcon icon={faEdit} /></Button>{' '}
+                <Button onClick={() => showDeleteModal("Project", row.row.original.projectId)} size="sm" variant="outline-danger"><FontAwesomeIcon icon={faTrash} /></Button>
+            </ButtonGroup>
+        )
+    },
+];*/
+
+
 const trimData = (data = []) =>
   data.map(({ projectId, projectName, projectDescription,enabled,createdAt,updatedAt,lastUpdatedBy }) => ({
     projectId,
@@ -27,14 +71,13 @@ const trimData = (data = []) =>
   })
 );
 
-// Initial state of Table parameters
+
 const initialState = {
   queryPageIndex: 0,
   queryPageSize: 10,
   totalCount: null,
 };
 
-// Different types of actions on table 
 const PAGE_CHANGED = 'PAGE_CHANGED';
 const PAGE_SIZE_CHANGED = 'PAGE_SIZE_CHANGED';
 const TOTAL_COUNT_CHANGED = 'TOTAL_COUNT_CHANGED';
@@ -63,9 +106,8 @@ const reducer = (state, { type, payload }) => {
 
 //Reference: https://www.youtube.com/playlist?list=PLC3y8-rFHvwgWTSrDiwmUsl4ZvipOw9Cz
 //         : https://dev.to/elangobharathi/server-side-pagination-using-react-table-v7-and-react-query-v3-3lck
-const ProjectList = () => {
+const ProjectList_Final = () => {
 
-    // Table columns
     const COLUMNS = [
         {
             Header: 'Id',
@@ -103,17 +145,17 @@ const ProjectList = () => {
             Cell: row => (
                 <ButtonGroup>
                     <Button href={`/edit-project/${row.row.original.projectId}`} size="sm" variant="outline-primary"><FontAwesomeIcon icon={faEdit} /></Button>{' '}
-                    <Button onClick={() => showDeleteModal("Project '"+row.row.original.projectName+"'", row.row.original.projectId)} size="sm" variant="outline-danger"><FontAwesomeIcon icon={faTrash} /></Button>
+                    <Button onClick={() => showDeleteModal("Project", row.row.original.projectId)} size="sm" variant="outline-danger"><FontAwesomeIcon icon={faTrash} /></Button>
                 </ButtonGroup>
             )
         },
     ];
 
-    // useLocation is used to get the data passed via useNavigate()
+    //useLocation is used to get the data passed via useNavigate()
     //https://stackoverflow.com/questions/52238637/react-router-how-to-pass-data-between-pages-in-react
     const loc  = useLocation();
 
-    // This useEffect is used to load the data in list (on page load this will be called)
+    //this useEffect is used to load the data in list (on page load this will be called)
     useEffect(() => {
         //When we are saving or updating any value, we are passing a state 'dataSubmittedSuccessMessage' along with useNavigate() function
         //Using useLocation hook we can get the state passed via useNavigate() function
@@ -128,32 +170,28 @@ const ProjectList = () => {
         }
         //calling the method for getting the list of Projects
         getProjectData(queryPageIndex,queryPageSize);
-//    }, [loc.state])
-      }, [loc.state])
+    }, [loc.state])
 
-    // Function used for fetching data from API (Move to Project Service)
     const getProjectData = async (page, pageSize) => {
         console.log(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`)
         try {
-            //Get the API response
-            const response = await fetch(
-                `http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`
-            );
-            //JSON formatted data
-            const data = await response.json();
-            console.log(data)
-            //Return the data
-            return data;
+          const response = await fetch(
+            `http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`
+          );
+          const data = await response.json();
+
+          console.log(data)
+
+          return data;
         } 
         catch (e) {
           throw new Error(`API error:${e?.message}`);
         }
     };
 
-    // Method for deleting the project
+    //method for deleting the project
     const deleteProject = (projectId) =>{
         console.log('Delete Id: '+projectId);
-        //Delete project with ID
         ProjectService.deleteProject(projectId).then((response) =>{
             //call the method which returns all the project details
             getProjectData(queryPageIndex,queryPageSize);
@@ -170,17 +208,16 @@ const ProjectList = () => {
     const [deleteMessage, setDeleteMessage] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
 
-    // Handle the displaying of the Modal and set the message based on entityType and id
+    // Handle the displaying of the Modal based on entityType and id
     const showDeleteModal = (entityType, id) => {
-        //Setting entity type(and name) , id
         setEntityType(entityType);
         setId(id);
         //Setting the success message to null (Once the delete is completed, then only we need the success message)
         setSuccessMessage(null);
         //Setting the message which needs to be displayed inside Modal
         
-        //setDeleteMessage(`Are you sure you want to delete the ${entityType} '${projects.find((x) => x.projectId === id)?.projectName}' with ID: ${id}?`);
-        setDeleteMessage(`Are you sure you want to delete the ${entityType} with ID: ${id}?`);
+        //setDeleteMessage(`Are you sure you want to delete the ${entityType} '${projects.find((x) => x.projectId === id).projectName}' with ID: ${id}?`);
+        setDeleteMessage(`Are you sure you want to delete the ${entityType} `);
         
         //We are setting this variable to true and pass it to the Modal so that it will show the Modal
         setDisplayConfirmationModal(true);
@@ -195,6 +232,7 @@ const ProjectList = () => {
     const submitDelete = (entityType, id) => {
         //Setting the success message
         //setSuccessMessage(`The ${entityType} '${projects.find((x) => x.projectId === id).projectName}' was deleted successfully.`);
+
         setSuccessMessage(`The ${entityType}  was deleted successfully.`);
 
         //Calling the actual delete method
@@ -204,7 +242,6 @@ const ProjectList = () => {
     };
     // DELETE CONFIRM MODAL CODE END//
 
-    // Below codes are related with the Table, Pagination, Caching etc.
     const [{ queryPageIndex, queryPageSize, totalCount }, dispatch] =
         React.useReducer(reducer, initialState);
 
@@ -244,15 +281,15 @@ const ProjectList = () => {
             pageIndex: queryPageIndex,
             pageSize: queryPageSize,
           },
-          // Tell the usePagination hook that we'll handle our own data fetching
-          // This means we'll also have to provide our own pageCount.
-          manualPagination: true,
+          manualPagination: true, // Tell the usePagination
+          // hook that we'll handle our own data fetching
+          // This means we'll also have to provide our own
+          // pageCount.
           pageCount: isSuccess ? Math.ceil(totalCount / queryPageSize) : null,
         },
         usePagination
     );
 
-    // Hooks for reloading the table contents
     useEffect(() => {
         dispatch({ type: PAGE_CHANGED, payload: pageIndex });
     }, [pageIndex]);
@@ -378,10 +415,10 @@ const ProjectList = () => {
     )
 }
 
-//export default ProjectList
+//export default ProjectList_Final
 export default function Wraped(){
     return(<QueryClientProvider client={queryClient}>
-            <ProjectList/>
+            <ProjectList_Final/>
         </QueryClientProvider>
     );       
 }

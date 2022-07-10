@@ -36,19 +36,14 @@ function App() {
               <Route path='/edit-project/:projectId' element={<Project />}></Route>
               <Route path='/project-list-final' element={<ProjectList_Final />}></Route>
               
-              
               <Route path='/form-example' element={<Form />}></Route>
               <Route path='/delete-confirm-example' element={<DeleteConfirmationExample />}></Route>
               <Route path='/pagination-example' element={<PaginationExample />}></Route>
               <Route path='/project-list-pagination' element={<ProjectList_Pagination />}></Route>
               <Route path='/project-list-bspagination' element={<ProjectList_BSTable />}></Route>
               <Route path='/project-list-react-table' element={<ProjectList_ReactTable/>}></Route>
-
               
-              <Route path='/server-side-pagination' element={<ServerSidePagination/>}></Route>
-              
-              
-
+              <Route path='/server-side-pagination' element={<ServerSidePagination/>}></Route>   
             </Routes>
           </Col>
         </Row>
