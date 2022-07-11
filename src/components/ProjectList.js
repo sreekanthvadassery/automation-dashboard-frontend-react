@@ -121,7 +121,8 @@ const ProjectList = () => {
         //we need to set the state if and only if loc.state is present
         if(loc.state){
             //setting the data to existing successMessage state
-            setSuccessMessage(loc.state.dataSubmmittedSuccessMessage)
+            setSuccessMessage(loc.state.dataSubmittedSuccessMessage)
+
             //Once set the data clear it so that during page refresh the message will be disappeared
             //https://stackoverflow.com/questions/53278986/how-to-clear-props-location-state-on-refresh
             window.history.replaceState(null, '')
