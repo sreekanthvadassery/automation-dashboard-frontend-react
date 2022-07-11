@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Card, Form, Button, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faPlusSquare, faUndo, faList } from '@fortawesome/free-solid-svg-icons'
-import ProjectService from '../services/ProjectService';
+import ProjectService from '../../services/ProjectService';
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai'
 
 //React React Forms Full Tutorial - Validation, React-Hook-Form, Yup
@@ -14,7 +14,7 @@ import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai'
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import SubmitConfirmation from './SubmitConfirmation';
+import SubmitConfirmation from '../SubmitConfirmation';
 
 //Container style css
 const containerStyle = {

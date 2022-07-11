@@ -1,14 +1,11 @@
 import React,{useState,useEffect} from 'react'
 import DataTable from 'react-data-table-component';
 
-import {Button, ButtonGroup, Card,  Table, Alert} from 'react-bootstrap';
+import {Button,  Card,   Alert} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faList,faEdit,faTrash, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
-import ProjectService from '../services/ProjectService';
-import {AiOutlineCheck,AiOutlineClose} from 'react-icons/ai'
-import DeleteConfirmation from './DeleteConfirmation';
-
-import {useLocation} from 'react-router-dom';
+import { faList, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
+import ProjectService from '../../services/ProjectService';
+import DeleteConfirmation from '../DeleteConfirmation';
 
 //columns used for react-data-table-component
 const columns = [
@@ -56,7 +53,7 @@ const ProjectList_Pagination = () => {
 
   //useLocation is used to get the data passed via useNavigate()
   //https://stackoverflow.com/questions/52238637/react-router-how-to-pass-data-between-pages-in-react
-  const loc  = useLocation();
+  //const loc  = useLocation();
   
 /*
   //this useEffect is used to load the data in list (on page load this will be called)
@@ -106,7 +103,7 @@ const ProjectList_Pagination = () => {
   const [successMessage, setSuccessMessage] = useState(null);
 
   // Handle the displaying of the Modal based on entityType and id
-  const showDeleteModal = (entityType, id) => {
+  /*const showDeleteModal = (entityType, id) => {
     setEntityType(entityType);
     setId(id);
     //Setting the success message to null (Once the delete is completed, then only we need the success message)
@@ -115,7 +112,7 @@ const ProjectList_Pagination = () => {
     setDeleteMessage(`Are you sure you want to delete the ${entityType} '${projects.find((x) => x.projectId === id).projectName}' with ID: ${id}?`);
     //We are setting this variable to true and pass it to the Modal so that it will show the Modal
     setDisplayConfirmationModal(true);
-  };
+  };*/
 
   // Hide the modal
   const hideConfirmationModal = () => {

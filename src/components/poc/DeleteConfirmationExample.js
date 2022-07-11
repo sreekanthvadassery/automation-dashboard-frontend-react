@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Row, Col, Container, Card, Table, Alert } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import DeleteConfirmation from './DeleteConfirmation';
+import DeleteConfirmation from '../DeleteConfirmation';
 
 const DeleteConfirmationExample = () => {
     // Set up a list of fruits and vegetables

@@ -9,8 +9,8 @@ import { faList, faPlusSquare,faAngleRight,faAngleLeft,faAnglesLeft,faAnglesRigh
 import { format } from 'date-fns'
 import { AiOutlineCheck,AiOutlineClose } from 'react-icons/ai'
 import { useLocation } from 'react-router-dom';
-import ProjectService from '../services/ProjectService';
-import DeleteConfirmation from './DeleteConfirmation';
+import ProjectService from '../../services/ProjectService';
+import DeleteConfirmation from '../DeleteConfirmation'
 
 const queryClient = new QueryClient();
 
@@ -121,14 +121,14 @@ const ProjectList = () => {
         //we need to set the state if and only if loc.state is present
         if(loc.state){
             //setting the data to existing successMessage state
-            setSuccessMessage(loc.state.dataSubmittedSuccessMessage)
-
+            setSuccessMessage(loc.state.dataSubmmittedSuccessMessage)
             //Once set the data clear it so that during page refresh the message will be disappeared
             //https://stackoverflow.com/questions/53278986/how-to-clear-props-location-state-on-refresh
             window.history.replaceState(null, '')
         }
         //calling the method for getting the list of Projects
         getProjectData(queryPageIndex,queryPageSize);
+//    }, [loc.state])
       }, [loc.state])
 
     // Function used for fetching data from API (Move to Project Service)
@@ -155,15 +155,8 @@ const ProjectList = () => {
         console.log('Delete Id: '+projectId);
         //Delete project with ID
         ProjectService.deleteProject(projectId).then((response) =>{
-            //call the method which returns all the project details (Even without this line, delete is working fine)
-            //getProjectData(queryPageIndex,queryPageSize);
-
-            // Deleted entry still visible - work around - page reload (But if we reload the page, the success message will be closed)
-            //window.location.reload();
-
-            //Reference: https://stackoverflow.com/questions/70377253/trigger-a-query-refresh-invalidate-from-onclick-handler
-            // Invalidating the useQuery for removing the deleted row(query refresh) - 'projects' is the query key
-            queryClient.invalidateQueries('projects')
+            //call the method which returns all the project details
+            getProjectData(queryPageIndex,queryPageSize);
         }).catch(error =>{
             console.log(error);
         })
@@ -206,7 +199,6 @@ const ProjectList = () => {
 
         //Calling the actual delete method
         deleteProject(id);
-
         //After calling the delete method, we need to close the Modal    
         setDisplayConfirmationModal(false);
     };
