@@ -3,7 +3,7 @@ import { useTable,usePagination } from 'react-table';
 import { useQuery } from 'react-query';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import BTable from 'react-bootstrap/Table';
-import { Button, Card, ButtonGroup,Alert} from 'react-bootstrap';
+import { Button, Card, ButtonGroup,Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList, faPlusSquare,faAngleRight,faAngleLeft,faAnglesLeft,faAnglesRight,faEdit,faTrash } from '@fortawesome/free-solid-svg-icons'
 import { format } from 'date-fns'
@@ -128,27 +128,8 @@ const ProjectList = () => {
             window.history.replaceState(null, '')
         }
         //calling the method for getting the list of Projects
-        getProjectData(queryPageIndex,queryPageSize);
+        ProjectService.getProjectData(queryPageIndex,queryPageSize);
       }, [loc.state])
-
-    // Function used for fetching data from API (Move to Project Service)
-    const getProjectData = async (page, pageSize) => {
-        console.log(`http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`)
-        try {
-            //Get the API response
-            const response = await fetch(
-                `http://localhost:8080/api/v1/project/find-all?page=${page}&size=${pageSize}`
-            );
-            //JSON formatted data
-            const data = await response.json();
-            console.log(data)
-            //Return the data
-            return data;
-        } 
-        catch (e) {
-          throw new Error(`API error:${e?.message}`);
-        }
-    };
 
     // Method for deleting the project
     const deleteProject = (projectId) =>{
@@ -156,7 +137,7 @@ const ProjectList = () => {
         //Delete project with ID
         ProjectService.deleteProject(projectId).then((response) =>{
             //call the method which returns all the project details (Even without this line, delete is working fine)
-            //getProjectData(queryPageIndex,queryPageSize);
+            //ProjectService.getProjectData(queryPageIndex,queryPageSize);
 
             // Deleted entry still visible - work around - page reload (But if we reload the page, the success message will be closed)
             //window.location.reload();
@@ -218,7 +199,7 @@ const ProjectList = () => {
 
     const { isLoading, error, data, isSuccess } = useQuery(
         ['projects', queryPageIndex, queryPageSize],
-        () => getProjectData(queryPageIndex, queryPageSize),
+        () => ProjectService.getProjectData(queryPageIndex, queryPageSize),
         {
             keepPreviousData: true,
             staleTime: Infinity,
@@ -246,7 +227,6 @@ const ProjectList = () => {
     } = useTable(
         {
           columns,
-          //data: isSuccess ? trimData(data.results) : [],
           data: isSuccess ? trimData(data.content) : [],
           initialState: {
             pageIndex: queryPageIndex,
@@ -271,15 +251,12 @@ const ProjectList = () => {
     }, [pageSize, gotoPage]);
     
     useEffect(() => {
-       // if (data?.count) {
         if (data?.totalElements) {
             dispatch({
                 type: TOTAL_COUNT_CHANGED,
-                //payload: data.count,
                 payload: data.totalElements,
             });
         }
-    //}, [data?.count]);
     }, [data?.totalElements]);
     
     if (error) {
@@ -329,7 +306,6 @@ const ProjectList = () => {
                                                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                             })
                                         }
-                                        
                                     </tr>
                                 )
                             })

@@ -8,6 +8,22 @@ class ProjectService {
         return axios.get(PROJECT_BASE_REST_API_URL+'/find-all')
     }
 
+    getProjectData = async (page, pageSize) => {
+        try {
+            //Get the API response
+            const response = await fetch(
+                PROJECT_BASE_REST_API_URL+`/find-all?page=${page}&size=${pageSize}`
+            );
+            //JSON formatted data
+            const data = await response.json();
+            //Return the data
+            return data;
+        } 
+        catch (e) {
+            throw new Error(`API error:${e?.message}`);
+        }
+    };
+
     saveProject(project){
         return axios.post(PROJECT_BASE_REST_API_URL+'/save',project);
     }
